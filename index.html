@@ -1,2128 +1,325 @@
-<!-- 福岡女子商業高等学校｜教員紹介 Ver.1.6
-     WordPress「カスタムHTML」ブロック貼り付け用
-     データ元：女子商_教員紹介_入力シート(2).xlsm -->
-
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>TEACHERS｜福岡女子商業高等学校 確認用</title>
 <style>
-/* =========================================================
-   福岡女子商業高等学校｜教員紹介 Ver.1.6
-   - 通常教職員 41名 + PARALLEL TEACHERS 7名
-   - WordPress固定ページ用。後日CPT/ACFへ置換しやすいデータ構造
-   ========================================================= */
-.fg-teachers-v1{
-  --fg-orange:#f2a23a;
-  --fg-sky:#77d2ec;
-  --fg-ink:#111318;
-  --fg-paper:#f7f6f2;
-  --fg-white:#fff;
-  --fg-muted:#6d7178;
-  --fg-line:rgba(17,19,24,.12);
-  --fg-radius:26px;
-  --fg-max:1440px;
-
-  width:100vw;
-  margin-left:calc(50% - 50vw);
-  overflow:hidden;
-  background:var(--fg-paper);
-  color:var(--fg-ink);
-  font-family:-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;
+:root{
+  --ink:#111318; --paper:#f4f2ed; --orange:#ff6b35; --sky:#8ed8ee;
+  --muted:#676d75; --line:rgba(17,19,24,.14); --white:#fff;
 }
-.fg-teachers-v1 *{box-sizing:border-box}
-.fg-teachers-v1 button,.fg-teachers-v1 a{font:inherit}
-.fg-teachers-v1 img{max-width:100%;display:block}
-.fg-teachers-v1 a{color:inherit;text-decoration:none}
-.fg-teachers-v1__inner{width:min(calc(100% - 48px),var(--fg-max));margin-inline:auto}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue","Yu Gothic","Hiragino Kaku Gothic ProN","Noto Sans JP",Arial,sans-serif}
+button{font:inherit}
+img{display:block;max-width:100%}
+a{color:inherit}
+.page{overflow:hidden}
+.shell{width:min(1240px,calc(100% - 40px));margin:auto}
 
-/* HERO */
-.fg-hero{position:relative;min-height:78vh;padding:clamp(92px,10vw,150px) 0 70px;background:var(--fg-paper);isolation:isolate}
-.fg-hero::before{content:"";position:absolute;width:clamp(250px,34vw,560px);aspect-ratio:1;border-radius:50%;background:var(--fg-orange);right:-8%;top:-10%;z-index:-2}
-.fg-hero::after{content:"";position:absolute;width:clamp(180px,24vw,390px);aspect-ratio:1;border-radius:50%;background:var(--fg-sky);left:-8%;bottom:-18%;z-index:-2;opacity:.92}
-.fg-hero__eyebrow{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;margin-bottom:20px}
-.fg-hero__eyebrow::before{content:"";width:44px;height:3px;background:var(--fg-ink)}
-.fg-hero__title{margin:0;font-size:clamp(68px,14vw,210px);line-height:.78;letter-spacing:-.07em;font-weight:950}
-.fg-hero__title span{display:block;font-size:clamp(42px,8vw,112px);letter-spacing:-.05em;margin-top:22px}
-.fg-hero__copy{display:grid;grid-template-columns:1.25fr .75fr;gap:48px;align-items:end;margin-top:clamp(50px,8vw,100px)}
-.fg-hero__lead{font-size:clamp(24px,3.1vw,46px);font-weight:850;line-height:1.35;letter-spacing:-.03em;margin:0;max-width:850px}
-.fg-hero__sub{font-size:15px;line-height:1.9;margin:0;color:#393d43;max-width:500px}
+.hero{position:relative;min-height:620px;padding:110px 0 86px;background:var(--paper);overflow:hidden}
+.hero:before,.hero:after{content:"";position:absolute;border-radius:50%;pointer-events:none}
+.hero:before{width:380px;height:380px;background:var(--sky);right:-105px;top:-115px}
+.hero:after{width:250px;height:250px;background:var(--orange);left:-100px;bottom:-110px}
+.hero__eyebrow{font-size:12px;font-weight:900;letter-spacing:.18em}
+.hero__title{margin:24px 0 0;font-size:clamp(76px,13vw,188px);line-height:.78;letter-spacing:-.08em;font-weight:950}
+.hero__jp{display:block;font-size:clamp(34px,5vw,74px);margin-top:36px;line-height:1.1;letter-spacing:-.05em}
+.hero__copy{margin-top:52px;max-width:720px;font-size:clamp(18px,2vw,28px);font-weight:800;line-height:1.7}
+.hero__stamp{position:absolute;right:36px;bottom:34px;width:112px;height:112px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:900;letter-spacing:.12em;border:1px solid rgba(17,19,24,.2);background:rgba(255,255,255,.55);backdrop-filter:blur(8px)}
 
-/* GIFの白を背景へなじませる暫定処理。
-   透明PNG/SVGへ差し替えた場合も、そのまま利用可能です。 */
-.fg-hero__stamp{
-  position:absolute;right:5vw;bottom:20px;width:clamp(118px,10vw,160px);aspect-ratio:1;
-  display:block;transform:rotate(4deg);z-index:2;
+.marquee{position:relative;z-index:3;background:var(--ink);color:#fff;overflow:hidden;white-space:nowrap;border-block:1px solid var(--ink)}
+.marquee__track{display:inline-block;padding:17px 0;font-size:12px;font-weight:900;letter-spacing:.18em;animation:move 28s linear infinite}
+@keyframes move{to{transform:translateX(-50%)}}
+
+.manifesto{position:relative;padding:120px 0 110px;background:#fff;z-index:2}
+.manifesto__grid{display:grid;grid-template-columns:1fr 1.15fr;gap:80px;align-items:start}
+.kicker{font-size:11px;font-weight:950;letter-spacing:.16em;color:var(--muted)}
+.manifesto h2,.section-title{margin:18px 0 0;font-size:clamp(46px,6vw,86px);line-height:.96;letter-spacing:-.06em}
+.manifesto p{margin:26px 0 0;font-size:18px;line-height:2;color:#32363b}
+.values{display:grid;gap:22px}
+.value{padding:28px 0;border-top:1px solid var(--line)}
+.value strong{display:block;font-size:27px;letter-spacing:-.03em}
+.value span{display:block;margin-top:8px;color:var(--muted);font-size:14px;line-height:1.7}
+
+.directory{padding:100px 0 130px;background:var(--paper)}
+.section-head{display:flex;justify-content:space-between;gap:30px;align-items:end;margin-bottom:38px}
+.section-count{font-size:12px;font-weight:900;letter-spacing:.12em}
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 35px}
+.filter{border:1px solid rgba(17,19,24,.2);background:transparent;padding:10px 14px;border-radius:999px;font-size:11px;font-weight:900;cursor:pointer}
+.filter.is-active,.filter:hover{background:var(--ink);color:#fff}
+
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+.card{position:relative;min-width:0;cursor:pointer}
+.card[hidden]{display:none}
+.card__media{position:relative;aspect-ratio:4/5;overflow:hidden;background:#dfe3e4}
+.card__media:before{content:attr(data-initial);position:absolute;inset:0;display:grid;place-items:center;font-size:120px;font-weight:950;color:rgba(17,19,24,.11);background:linear-gradient(145deg,#e8e4dc,#d9e7eb)}
+.card img{position:relative;z-index:1;width:100%;height:100%;object-fit:cover;transition:transform .45s ease,opacity .25s ease}
+.card:hover img{transform:scale(1.025)}
+.card__shade{position:absolute;z-index:2;inset:36% 0 0;background:linear-gradient(to top,rgba(8,10,13,.9),transparent)}
+.card__tag{position:absolute;z-index:3;left:14px;top:14px;background:rgba(255,255,255,.9);padding:8px 10px;border-radius:999px;font-size:10px;font-weight:900}
+.card__body{position:absolute;z-index:3;left:18px;right:18px;bottom:18px;color:#fff}
+.card__role{font-size:9px;font-weight:900;letter-spacing:.12em;opacity:.74;text-transform:uppercase}
+.card__name{margin:6px 0 0;font-size:clamp(24px,2.1vw,34px);letter-spacing:-.045em}
+.card__en{font-size:9px;font-weight:800;letter-spacing:.1em;opacity:.66;margin-top:5px;text-transform:uppercase}
+.card__tagline{margin:14px 0 0;font-size:14px;font-weight:800;line-height:1.55}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.tag{font-size:9px;border:1px solid rgba(255,255,255,.46);border-radius:999px;padding:5px 8px}
+.card__arrow{position:absolute;z-index:4;right:13px;top:13px;width:34px;height:34px;border-radius:50%;background:var(--orange);display:grid;place-items:center;font-weight:900}
+.card:focus-visible{outline:4px solid var(--orange);outline-offset:4px}
+
+.parallel{position:relative;padding:110px 0 130px;background:var(--ink);color:#fff;overflow:hidden}
+.parallel:before,.parallel:after{content:"";position:absolute;border-radius:50%}
+.parallel:before{width:300px;height:300px;background:var(--sky);right:-90px;top:-120px}
+.parallel:after{width:200px;height:200px;background:var(--orange);left:-80px;bottom:-90px}
+.parallel__lead{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:end;margin-bottom:50px}
+.parallel__lead p{font-size:18px;line-height:1.9;color:rgba(255,255,255,.72)}
+.parallel-grid{position:relative;z-index:1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+.pcard{background:#fff;color:var(--ink);cursor:pointer;min-width:0}
+.pcard__visual{position:relative;aspect-ratio:4/4.4;overflow:hidden;background:linear-gradient(145deg,var(--sky),var(--orange))}
+.pcard__visual:before{content:attr(data-initial);position:absolute;inset:0;display:grid;place-items:center;font-size:110px;font-weight:950;color:rgba(17,19,24,.18)}
+.pcard__visual img{position:relative;z-index:1;width:100%;height:100%;object-fit:cover}
+.pcard__body{padding:20px 20px 24px}
+.pcard__role{font-size:9px;font-weight:900;letter-spacing:.12em;color:#777}
+.pcard__name{margin:7px 0 0;font-size:28px;letter-spacing:-.04em}
+.pcard__en{margin-top:4px;font-size:9px;font-weight:800;letter-spacing:.1em;color:#888;text-transform:uppercase}
+.pcard__tagline{font-size:14px;font-weight:800;line-height:1.5}
+.pcard .tag{color:var(--ink);border-color:rgba(17,19,24,.25)}
+.pcard:focus-visible{outline:4px solid var(--sky);outline-offset:4px}
+
+.join{padding:90px 0;background:#fff}
+.join__box{display:flex;justify-content:space-between;gap:40px;align-items:end;padding-top:30px;border-top:1px solid var(--line)}
+.join h2{margin:12px 0 0;font-size:clamp(42px,7vw,92px);letter-spacing:-.06em;line-height:.95}
+.join p{max-width:470px;line-height:1.9;color:#555}
+
+.modal{position:fixed;inset:0;z-index:9999;opacity:0;visibility:hidden;pointer-events:none;transition:.25s}
+.modal.is-open{opacity:1;visibility:visible;pointer-events:auto}
+.modal__backdrop{position:absolute;inset:0;background:rgba(8,10,13,.55);backdrop-filter:blur(8px)}
+.modal__panel{position:absolute;inset:0;background:var(--paper);display:grid;grid-template-columns:minmax(330px,42%) minmax(0,58%);overflow:hidden}
+.modal.is-parallel .modal__panel{background:#0c0f12;color:#fff}
+.modal__media{position:relative;overflow:hidden;background:#dfe3e4}
+.modal__media:before{content:attr(data-initial);position:absolute;inset:0;display:grid;place-items:center;font-size:clamp(120px,17vw,280px);font-weight:950;color:rgba(17,19,24,.12);background:linear-gradient(145deg,#ede9e2,#dae6e8)}
+.modal.is-parallel .modal__media:before{background:linear-gradient(145deg,var(--sky),var(--orange));color:rgba(17,19,24,.18)}
+.modal__media img{position:relative;z-index:1;width:100%;height:100%;object-fit:cover}
+.modal__content{height:100dvh;overflow-y:auto;padding:clamp(62px,7vw,105px) clamp(28px,5vw,78px) 110px;background:#f4f2ed}
+.modal.is-parallel .modal__content{background:#0c0f12}
+.modal__top{font-size:12px;font-weight:900;letter-spacing:.13em;color:#50565d;text-transform:uppercase}
+.modal.is-parallel .modal__top{color:rgba(255,255,255,.76)}
+.modal__name{margin:18px 0 0;font-size:clamp(48px,6vw,92px);line-height:.93;letter-spacing:-.06em}
+.modal__en{margin-top:10px;font-size:12px;font-weight:800;letter-spacing:.11em;color:#5d636b;text-transform:uppercase}
+.modal.is-parallel .modal__en{color:rgba(255,255,255,.66)}
+.modal__tagline{margin-top:36px;font-size:clamp(26px,3vw,44px);font-weight:900;line-height:1.3;letter-spacing:-.04em}
+.modal__tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
+.modal__tag{padding:7px 11px;border:1px solid currentColor;border-radius:999px;font-size:10px;font-weight:850;opacity:.7}
+.sample{display:none;margin-top:20px;padding:8px 11px;border-radius:999px;background:var(--orange);font-size:9px;font-weight:950;letter-spacing:.12em;color:var(--ink);width:max-content}
+.sample.show{display:block}
+.blocks{margin-top:60px;border-top:1px solid rgba(17,19,24,.18)}
+.modal.is-parallel .blocks{border-color:rgba(255,255,255,.22)}
+.block{display:grid;grid-template-columns:220px 1fr;gap:36px;padding:34px 22px;margin:0 -22px;border-bottom:1px solid rgba(17,19,24,.17);border-radius:12px}
+.modal.is-parallel .block{border-color:rgba(255,255,255,.2)}
+.block[hidden]{display:none}
+.block__label{font-size:12px;font-weight:950;letter-spacing:.1em;line-height:1.5}
+.block__label span{display:block;margin-top:7px;font-size:13px;font-weight:650;letter-spacing:0;color:#555b62;line-height:1.58}
+.modal.is-parallel .block__label span{color:rgba(255,255,255,.74)}
+.block__text{margin:0;font-size:clamp(17px,1.35vw,20px);font-weight:500;line-height:1.88;color:#202329}
+.modal.is-parallel .block__text{color:rgba(255,255,255,.94)}
+.block--motto .block__text{font-size:clamp(22px,2.2vw,34px);font-weight:900;line-height:1.5;color:var(--ink)}
+.modal.is-parallel .block--motto .block__text{color:#fff}
+.empty{display:none;margin-top:50px;padding:24px;border:1px dashed currentColor;border-radius:16px;font-size:14px;line-height:1.8;opacity:.65}
+.empty.show{display:block}
+.close{position:absolute;z-index:20;right:22px;top:20px;border:0;background:rgba(255,255,255,.9);padding:0 18px;height:46px;border-radius:999px;font-size:10px;font-weight:950;letter-spacing:.12em;cursor:pointer}
+.modal.is-parallel .close{background:rgba(17,19,24,.82);color:#fff;border:1px solid rgba(255,255,255,.22)}
+.modal__nav{position:absolute;z-index:20;right:clamp(28px,5vw,78px);bottom:22px;display:flex;gap:8px}
+.modal__nav button{height:48px;border-radius:999px;padding:0 18px;border:1px solid rgba(17,19,24,.18);background:rgba(255,255,255,.9);font-size:10px;font-weight:950;letter-spacing:.1em;cursor:pointer}
+.modal.is-parallel .modal__nav button{background:rgba(17,19,24,.86);color:#fff;border-color:rgba(255,255,255,.22)}
+body.modal-open{overflow:hidden}
+
+@media(max-width:1050px){
+  .grid,.parallel-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
 }
-.fg-hero__stamp img{
-  width:100%;height:100%;object-fit:contain;display:block;
-  mix-blend-mode:multiply;
-  opacity:.94;
-  filter:none;
-}
-
-/* MARQUEE */
-.fg-marquee{border-block:1px solid var(--fg-line);background:#fff;overflow:hidden;white-space:nowrap}
-.fg-marquee__track{display:inline-flex;gap:36px;padding:15px 0;min-width:max-content;animation:fgMarquee 26s linear infinite;font-weight:900;font-size:14px;letter-spacing:.1em}
-.fg-marquee__track span::after{content:"✦";margin-left:36px;color:var(--fg-orange)}
-@keyframes fgMarquee{to{transform:translateX(-50%)}}
-
-/* MANIFESTO */
-.fg-manifesto{padding:clamp(72px,9vw,130px) 0;background:#fff}
-.fg-section-kicker{font-size:12px;font-weight:900;letter-spacing:.16em;margin-bottom:20px}
-.fg-manifesto__head{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-bottom:48px}
-.fg-manifesto h2{font-size:clamp(38px,6vw,82px);line-height:1.02;letter-spacing:-.05em;margin:0;max-width:850px}
-.fg-manifesto__text{align-self:end;font-size:16px;line-height:1.9;color:#474b52;margin:0;max-width:560px}
-.fg-values{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-.fg-value{min-height:240px;border-radius:var(--fg-radius);padding:28px;display:flex;flex-direction:column;justify-content:space-between;border:1px solid var(--fg-line)}
-.fg-value:nth-child(1){background:var(--fg-orange)}
-.fg-value:nth-child(2){background:var(--fg-sky)}
-.fg-value:nth-child(3){background:var(--fg-ink);color:#fff}
-.fg-value__num{font-size:12px;font-weight:900;letter-spacing:.14em}
-.fg-value h3{font-size:clamp(28px,3.2vw,48px);letter-spacing:-.04em;margin:0 0 12px}
-.fg-value p{margin:0;line-height:1.7;font-size:14px;max-width:32em}
-
-/* DIRECTORY */
-.fg-directory{padding:clamp(80px,10vw,140px) 0;background:var(--fg-paper)}
-.fg-directory__top{display:flex;justify-content:space-between;align-items:end;gap:30px;margin-bottom:30px}
-.fg-directory__title{margin:0;font-size:clamp(44px,7vw,92px);line-height:.95;letter-spacing:-.055em}
-.fg-directory__count{font-size:13px;font-weight:850;letter-spacing:.1em;white-space:nowrap}
-.fg-filters{display:flex;gap:8px;overflow:auto;padding:12px 0 20px;scrollbar-width:none;position:sticky;top:0;z-index:12;background:linear-gradient(var(--fg-paper) 76%,rgba(247,246,242,0))}
-.fg-filters::-webkit-scrollbar{display:none}
-.fg-filter{border:1px solid var(--fg-ink);background:transparent;color:var(--fg-ink);border-radius:999px;padding:10px 17px;font-size:12px;font-weight:800;white-space:nowrap;cursor:pointer;transition:.2s ease}
-.fg-filter:hover,.fg-filter.is-active{background:var(--fg-ink);color:#fff}
-.fg-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-top:18px}
-.fg-card{position:relative;min-width:0;transition:opacity .25s ease,transform .25s ease}
-.fg-card[hidden]{display:none!important}
-.fg-card__media{position:relative;aspect-ratio:4/5;border-radius:22px;overflow:hidden;background:#dfe1e4;isolation:isolate}
-.fg-card__media::before{content:attr(data-initial);position:absolute;inset:0;display:grid;place-items:center;font-size:clamp(64px,9vw,140px);font-weight:950;letter-spacing:-.08em;color:rgba(17,19,24,.14);background:linear-gradient(145deg,#f1efea,#d9e4e7);z-index:-1}
-.fg-card__media img{width:100%;height:100%;object-fit:cover;object-position:center;filter:saturate(.88) contrast(.98);transition:transform .5s cubic-bezier(.2,.65,.25,1),filter .35s ease}
-.fg-card__media::after{content:"";position:absolute;inset:45% 0 0;background:linear-gradient(to top,rgba(10,12,16,.78),rgba(10,12,16,0));pointer-events:none}
-.fg-card__tag{position:absolute;left:14px;top:14px;z-index:2;padding:7px 10px;border-radius:999px;background:rgba(255,255,255,.9);backdrop-filter:blur(8px);font-size:10px;font-weight:900;letter-spacing:.08em}
-.fg-card__overlay{position:absolute;left:18px;right:18px;bottom:18px;z-index:2;color:#fff}
-.fg-card__role{font-size:10px;font-weight:800;letter-spacing:.12em;opacity:.8;margin-bottom:6px}
-.fg-card__name{font-size:clamp(20px,2.1vw,30px);line-height:1.12;font-weight:900;letter-spacing:-.03em;margin:0}
-.fg-card__name-en{font-size:10px;line-height:1.4;font-weight:700;letter-spacing:.08em;text-transform:uppercase;opacity:.72;margin-top:4px}
-.fg-card__tagline{font-size:13px;line-height:1.55;margin:9px 0 0;opacity:.92;transform:translateY(5px);transition:.3s ease}
-.fg-card__hashtags{display:flex;flex-wrap:wrap;gap:5px 8px;margin-top:10px}
-.fg-card__hashtag{font-size:10px;line-height:1.35;font-weight:800;letter-spacing:.01em;color:#fff;opacity:.82;white-space:nowrap}
-.fg-card__hashtag::before{content:"#"}
-.fg-card__arrow{position:absolute;right:16px;top:50%;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:var(--fg-orange);color:var(--fg-ink);font-weight:900;transform:translateY(-50%) scale(.75);opacity:0;transition:.3s ease}
-.fg-card:hover .fg-card__media img{transform:scale(1.045);filter:saturate(1) contrast(1.02)}
-.fg-card:hover .fg-card__arrow{opacity:1;transform:translateY(-50%) scale(1)}
-.fg-card:hover .fg-card__tagline{transform:none}
-.fg-card.is-entering{opacity:0;transform:translateY(10px)}
-
-/* PARALLEL TEACHERS */
-.fg-parallel{position:relative;padding:clamp(82px,10vw,145px) 0;background:var(--fg-ink);color:#fff;overflow:hidden;isolation:isolate}
-.fg-parallel::before{content:"";position:absolute;width:440px;aspect-ratio:1;border-radius:50%;background:var(--fg-sky);left:-220px;top:-170px;z-index:-1;opacity:.96}
-.fg-parallel::after{content:"";position:absolute;width:360px;aspect-ratio:1;border-radius:50%;background:var(--fg-orange);right:-150px;bottom:-190px;z-index:-1}
-.fg-parallel__head{display:grid;grid-template-columns:1.1fr .9fr;gap:48px;align-items:end;margin-bottom:42px}
-.fg-parallel__title{margin:0;font-size:clamp(58px,9vw,132px);line-height:.78;letter-spacing:-.065em}
-.fg-parallel__title span{display:block;font-size:.52em;letter-spacing:-.045em;margin-top:22px}
-.fg-parallel__intro{margin:0 0 4px;font-size:clamp(18px,2.1vw,28px);font-weight:800;line-height:1.55;letter-spacing:-.025em}
-.fg-parallel__intro small{display:block;margin-top:15px;font-size:14px;font-weight:500;line-height:1.85;color:rgba(255,255,255,.72);max-width:560px}
-.fg-parallel__meta{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:18px}
-.fg-parallel__count{font-size:12px;font-weight:900;letter-spacing:.14em}
-.fg-parallel__line{height:1px;flex:1;background:rgba(255,255,255,.22)}
-.fg-parallel__grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
-.fg-parallel-card{min-width:0;background:#fff;color:var(--fg-ink);border-radius:22px;overflow:hidden;box-shadow:0 18px 50px rgba(0,0,0,.16);transition:transform .3s ease}
-.fg-parallel-card:hover{transform:translateY(-6px)}
-.fg-parallel-card__visual{position:relative;aspect-ratio:5/4;overflow:hidden;background:var(--fg-sky)}
-.fg-parallel-card:nth-child(3n+2) .fg-parallel-card__visual{background:var(--fg-orange)}
-.fg-parallel-card:nth-child(3n+3) .fg-parallel-card__visual{background:#e9e7df}
-.fg-parallel-card__visual::before{content:attr(data-initial);position:absolute;inset:0;display:grid;place-items:center;font-size:clamp(74px,8vw,132px);font-weight:950;letter-spacing:-.08em;color:rgba(17,19,24,.17)}
-.fg-parallel-card__visual img{position:relative;z-index:1;width:100%;height:100%;object-fit:cover;filter:saturate(.9);transition:transform .45s ease}
-.fg-parallel-card:hover .fg-parallel-card__visual img{transform:scale(1.04)}
-.fg-parallel-card__body{padding:22px 22px 24px}
-.fg-parallel-card__role{display:inline-flex;padding:6px 9px;border-radius:999px;background:var(--fg-ink);color:#fff;font-size:9px;font-weight:900;letter-spacing:.1em;margin-bottom:15px}
-.fg-parallel-card__name{margin:0;font-size:27px;line-height:1.08;letter-spacing:-.04em;font-weight:900}
-.fg-parallel-card__name-en{margin-top:5px;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#757982}
-.fg-parallel-card__tagline{margin:17px 0 0;font-size:15px;line-height:1.55;font-weight:800}
-.fg-parallel-card__hashtags{display:flex;flex-wrap:wrap;gap:6px 9px;margin-top:14px}
-.fg-parallel-card__hashtag{font-size:10px;font-weight:800;color:#4e535b}
-.fg-parallel-card__hashtag::before{content:"#"}
-.fg-parallel__note{margin:28px 0 0;font-size:11px;line-height:1.7;color:rgba(255,255,255,.55)}
-
-/* RECRUIT CTA */
-.fg-recruit{padding:clamp(80px,10vw,140px) 0;background:#fff;color:var(--fg-ink);position:relative;overflow:hidden}
-.fg-recruit::before{content:"";position:absolute;width:420px;aspect-ratio:1;border-radius:50%;background:var(--fg-orange);right:-120px;top:-190px}
-.fg-recruit::after{content:"";position:absolute;width:250px;aspect-ratio:1;border-radius:50%;background:var(--fg-sky);left:-95px;bottom:-130px}
-.fg-recruit__inner{position:relative;z-index:1;display:grid;grid-template-columns:1fr auto;gap:40px;align-items:end}
-.fg-recruit__kicker{font-size:12px;font-weight:900;letter-spacing:.14em;margin-bottom:18px}
-.fg-recruit h2{font-size:clamp(48px,8.5vw,130px);letter-spacing:-.065em;line-height:.82;margin:0}
-.fg-recruit h2 span{display:block;font-size:.52em;letter-spacing:-.04em;margin-top:24px}
-.fg-recruit__button{display:inline-flex;align-items:center;justify-content:center;gap:18px;min-width:240px;padding:19px 24px;border-radius:999px;background:var(--fg-ink);color:#fff!important;font-weight:900;transition:.25s ease}
-.fg-recruit__button:hover{transform:translateY(-3px);background:var(--fg-orange);color:var(--fg-ink)!important}
-
-/* NOTE */
-.fg-prototype-note{background:#fff;border-top:1px solid var(--fg-line);padding:22px 0;font-size:11px;line-height:1.7;color:var(--fg-muted)}
-
-@media(max-width:1080px){
-  .fg-grid,.fg-parallel__grid{grid-template-columns:repeat(3,minmax(0,1fr))}
-  .fg-hero__copy,.fg-manifesto__head,.fg-parallel__head{grid-template-columns:1fr;gap:24px}
-  .fg-values{grid-template-columns:1fr 1fr}.fg-value:last-child{grid-column:1/-1}
+@media(max-width:900px){
+  .manifesto__grid,.parallel__lead{grid-template-columns:1fr;gap:42px}
+  .modal__panel{display:block;overflow-y:auto}
+  .modal__media{height:42svh;min-height:300px;max-height:460px}
+  .modal__content{height:auto;overflow:visible;padding:36px 22px 110px}
+  .block{grid-template-columns:1fr;gap:14px;padding:28px 18px;margin:0 -18px}
+  .modal__nav{position:fixed;left:16px;right:16px;bottom:14px;justify-content:space-between}
+  .close{position:fixed;right:13px;top:13px}
 }
 @media(max-width:760px){
-  .fg-teachers-v1__inner{width:min(calc(100% - 28px),var(--fg-max))}
-  .fg-hero{min-height:auto;padding-top:86px}
-  .fg-hero__title{font-size:clamp(64px,22vw,118px)}
-  .fg-hero__title span{font-size:clamp(38px,12vw,64px)}
-  .fg-hero__stamp{width:92px;right:14px;bottom:18px;transform:rotate(2deg)}
-  .fg-grid,.fg-parallel__grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-  .fg-card__media{border-radius:18px}
-  .fg-card__overlay{left:13px;right:13px;bottom:13px}
-  .fg-card__tag{left:10px;top:10px;font-size:9px;padding:6px 8px}
-  .fg-card__name{font-size:20px}.fg-card__name-en{font-size:9px}.fg-card__tagline{font-size:11px}.fg-card__hashtag{font-size:9px}
-  .fg-values{grid-template-columns:1fr}.fg-value:last-child{grid-column:auto}
-  .fg-parallel-card__body{padding:18px}
-  .fg-parallel-card__name{font-size:23px}
-  .fg-recruit__inner{grid-template-columns:1fr}.fg-recruit__button{justify-self:start}
+  .shell{width:min(100% - 28px,1240px)}
+  .hero{min-height:auto;padding:72px 0 64px}
+  .hero:before{width:210px;height:210px;right:-92px;top:-78px}
+  .hero:after{width:145px;height:145px;left:-72px;bottom:-65px}
+  .hero__copy{margin-top:40px}
+  .hero__stamp{width:80px;height:80px;right:12px;bottom:12px}
+  .manifesto,.directory,.parallel{padding-block:76px}
+  .grid,.parallel-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .section-head,.join__box{align-items:start;flex-direction:column}
 }
-@media(max-width:430px){
-  .fg-grid,.fg-parallel__grid{grid-template-columns:1fr}
-  .fg-card__media{aspect-ratio:5/6}
-  .fg-card__name{font-size:28px}.fg-card__tagline{font-size:13px}.fg-card__hashtag{font-size:10px}
-  .fg-parallel-card__visual{aspect-ratio:16/10}
+@media(max-width:520px){
+  .grid,.parallel-grid{grid-template-columns:1fr}
+  .hero__title{font-size:24vw}
+  .hero__jp{font-size:10.5vw}
+  .modal__media{height:39svh;min-height:270px}
+  .modal__name{font-size:13vw}
 }
-@media(prefers-reduced-motion:reduce){
-  .fg-teachers-v1 *{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
-}
-
-/* PROFILE MODAL / V1.4 */
-.fg-card,.fg-parallel-card{cursor:pointer}
-.fg-card:focus-visible,.fg-parallel-card:focus-visible{outline:4px solid var(--fg-orange);outline-offset:4px}
-.fg-parallel-card:focus-visible{outline-color:var(--fg-sky)}
-.fg-profile-modal{position:fixed;inset:0;z-index:999999;visibility:hidden;opacity:0;pointer-events:none;transition:opacity .24s ease,visibility .24s ease}
-.fg-profile-modal.is-open{visibility:visible;opacity:1;pointer-events:auto}
-.fg-profile-modal__backdrop{position:absolute;inset:0;background:rgba(9,11,15,.52);backdrop-filter:blur(8px)}
-.fg-profile-modal__panel{position:absolute;inset:0;background:var(--fg-paper);color:var(--fg-ink);display:grid;grid-template-columns:minmax(340px,42%) minmax(0,58%);transform:translateY(12px);transition:transform .32s cubic-bezier(.2,.65,.25,1);overflow:hidden}
-.fg-profile-modal.is-open .fg-profile-modal__panel{transform:none}
-.fg-profile-modal.is-parallel .fg-profile-modal__panel{background:var(--fg-ink);color:#fff}
-.fg-profile-modal__media{position:relative;min-height:100%;overflow:hidden;background:#dfe1e4}
-.fg-profile-modal__media::before{content:attr(data-initial);position:absolute;inset:0;display:grid;place-items:center;font-size:clamp(120px,17vw,280px);font-weight:950;letter-spacing:-.08em;color:rgba(17,19,24,.13);background:linear-gradient(145deg,#f1efea,#d9e4e7)}
-.fg-profile-modal.is-parallel .fg-profile-modal__media::before{background:linear-gradient(145deg,var(--fg-sky),var(--fg-orange));color:rgba(17,19,24,.18)}
-.fg-profile-modal__media img{position:relative;z-index:1;width:100%;height:100%;object-fit:cover;filter:saturate(.92)}
-.fg-profile-modal__media::after{content:"";position:absolute;z-index:2;inset:55% 0 0;background:linear-gradient(to top,rgba(8,10,14,.58),transparent);pointer-events:none}
-.fg-profile-modal__content{height:100dvh;overflow-y:auto;padding:clamp(62px,7vw,108px) clamp(28px,5vw,82px) 110px;overscroll-behavior:contain}
-.fg-profile-modal__topline{display:flex;align-items:center;gap:10px;margin-bottom:18px;font-size:11px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#676c74}
-.fg-profile-modal.is-parallel .fg-profile-modal__topline{color:rgba(255,255,255,.62)}
-.fg-profile-modal__topline::before{content:"";width:34px;height:2px;background:currentColor}
-.fg-profile-modal__name{margin:0;font-size:clamp(48px,6vw,92px);line-height:.92;letter-spacing:-.06em;font-weight:950}
-.fg-profile-modal__name-en{margin-top:12px;font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#747982}
-.fg-profile-modal.is-parallel .fg-profile-modal__name-en{color:rgba(255,255,255,.55)}
-.fg-profile-modal__tagline{margin:clamp(32px,4vw,52px) 0 0;font-size:clamp(25px,3.1vw,44px);font-weight:900;line-height:1.25;letter-spacing:-.04em;max-width:800px}
-.fg-profile-modal__hashtags{display:flex;flex-wrap:wrap;gap:8px;margin-top:20px}
-.fg-profile-modal__hashtag{padding:8px 12px;border:1px solid currentColor;border-radius:999px;font-size:11px;font-weight:800;opacity:.7}
-.fg-profile-modal__hashtag::before{content:"#"}
-.fg-profile-modal__sample{display:none;width:max-content;margin-top:20px;padding:8px 11px;border-radius:999px;background:var(--fg-orange);color:var(--fg-ink);font-size:9px;font-weight:950;letter-spacing:.14em}
-.fg-profile-modal__sample.is-visible{display:inline-flex}
-.fg-profile-modal__sections{margin-top:clamp(54px,7vw,90px);border-top:1px solid rgba(17,19,24,.14)}
-.fg-profile-modal.is-parallel .fg-profile-modal__sections{border-color:rgba(255,255,255,.18)}
-.fg-profile-block{display:grid;grid-template-columns:190px 1fr;gap:30px;padding:32px 0;border-bottom:1px solid rgba(17,19,24,.14)}
-.fg-profile-modal.is-parallel .fg-profile-block{border-color:rgba(255,255,255,.18)}
-.fg-profile-block[hidden]{display:none!important}
-.fg-profile-block__label{font-size:11px;font-weight:950;letter-spacing:.13em;line-height:1.5}
-.fg-profile-block__label span{display:block;margin-top:5px;font-size:10px;font-weight:600;letter-spacing:.02em;color:#80858c}
-.fg-profile-modal.is-parallel .fg-profile-block__label span{color:rgba(255,255,255,.48)}
-.fg-profile-block__text{margin:0;font-size:clamp(16px,1.45vw,21px);line-height:1.9;font-weight:550}
-.fg-profile-block--motto .fg-profile-block__text{font-size:clamp(22px,2.3vw,34px);font-weight:900;line-height:1.5;letter-spacing:-.025em}
-.fg-profile-modal__empty{display:none;margin-top:56px;padding:26px;border:1px dashed currentColor;border-radius:18px;font-size:13px;line-height:1.8;opacity:.5}
-.fg-profile-modal__empty.is-visible{display:block}
-.fg-profile-modal__close{position:absolute;z-index:10;right:24px;top:22px;border:0;background:rgba(255,255,255,.88);color:var(--fg-ink);backdrop-filter:blur(10px);height:46px;padding:0 18px;border-radius:999px;font-size:10px;font-weight:950;letter-spacing:.12em;cursor:pointer}
-.fg-profile-modal.is-parallel .fg-profile-modal__close{background:rgba(17,19,24,.78);color:#fff;border:1px solid rgba(255,255,255,.22)}
-.fg-profile-modal__nav{position:absolute;z-index:10;right:clamp(28px,5vw,82px);bottom:24px;display:flex;align-items:center;gap:8px}
-.fg-profile-modal__nav button{border:1px solid rgba(17,19,24,.18);background:rgba(255,255,255,.9);color:var(--fg-ink);height:48px;padding:0 18px;border-radius:999px;font-size:10px;font-weight:950;letter-spacing:.11em;cursor:pointer;backdrop-filter:blur(12px)}
-.fg-profile-modal.is-parallel .fg-profile-modal__nav button{background:rgba(17,19,24,.86);color:#fff;border-color:rgba(255,255,255,.22)}
-.fg-profile-modal__nav button:hover,.fg-profile-modal__close:hover{transform:translateY(-2px)}
-body.fg-modal-open{overflow:hidden}
-@media(max-width:900px){
-  .fg-profile-modal__panel{display:block;overflow-y:auto}
-  .fg-profile-modal__media{min-height:52svh;height:52svh}
-  .fg-profile-modal__content{height:auto;overflow:visible;padding:42px 22px 110px}
-  .fg-profile-modal__nav{position:fixed;left:18px;right:18px;bottom:16px;justify-content:space-between}
-  .fg-profile-block{grid-template-columns:1fr;gap:12px}
-  .fg-profile-modal__close{position:fixed;right:14px;top:14px}
-}
-@media(max-width:560px){
-  .fg-profile-modal__media{height:46svh;min-height:46svh}
-  .fg-profile-modal__name{font-size:48px}
-  .fg-profile-modal__tagline{font-size:27px}
-  .fg-profile-modal__content{padding-inline:18px}
-}
-
-
-/* =========================================================
-   PROFILE READABILITY UPDATE / V1.5
-   Visual hierarchy is preserved, but long-form reading gets
-   an opaque "editorial paper" surface and stronger contrast.
-   ========================================================= */
-
-.fg-profile-modal__content{
-  position:relative;
-  z-index:3;
-  background:#f4f2ed;
-}
-
-.fg-profile-modal.is-parallel .fg-profile-modal__content{
-  background:#0c0f12;
-}
-
-/* Meta information: still secondary, but no longer too faint */
-.fg-profile-modal__topline{
-  font-size:12px;
-  color:#50565d;
-}
-
-.fg-profile-modal__name-en{
-  font-size:12px;
-  color:#5d636b;
-}
-
-.fg-profile-modal.is-parallel .fg-profile-modal__topline{
-  color:rgba(255,255,255,.76);
-}
-
-.fg-profile-modal.is-parallel .fg-profile-modal__name-en{
-  color:rgba(255,255,255,.66);
-}
-
-/* Each row remains editorial rather than becoming a boxed card */
-.fg-profile-block{
-  grid-template-columns:clamp(190px,14vw,220px) minmax(0,1fr);
-  gap:clamp(28px,3vw,40px);
-  padding:34px 22px;
-  margin-inline:-22px;
-  border-bottom:1px solid rgba(17,19,24,.17);
-  border-radius:12px;
-  transition:background .2s ease;
-}
-
-.fg-profile-block:hover{
-  background:rgba(255,255,255,.46);
-}
-
-.fg-profile-modal.is-parallel .fg-profile-block{
-  border-color:rgba(255,255,255,.20);
-}
-
-.fg-profile-modal.is-parallel .fg-profile-block:hover{
-  background:rgba(255,255,255,.045);
-}
-
-/* English heading = graphic label */
-.fg-profile-block__label{
-  font-size:12px;
-  font-weight:950;
-  letter-spacing:.10em;
-  line-height:1.5;
-  color:#171a1f;
-}
-
-/* Japanese helper copy = actual readable information */
-.fg-profile-block__label span{
-  margin-top:7px;
-  font-size:13px;
-  line-height:1.58;
-  font-weight:650;
-  letter-spacing:0;
-  color:#555b62;
-}
-
-.fg-profile-modal.is-parallel .fg-profile-block__label{
-  color:#fff;
-}
-
-.fg-profile-modal.is-parallel .fg-profile-block__label span{
-  color:rgba(255,255,255,.74);
-}
-
-/* Body: slightly lighter weight creates better hierarchy */
-.fg-profile-block__text{
-  font-size:clamp(17px,1.35vw,20px);
-  line-height:1.88;
-  font-weight:500;
-  color:#202329;
-}
-
-.fg-profile-modal.is-parallel .fg-profile-block__text{
-  color:rgba(255,255,255,.94);
-}
-
-/* Motto can remain the most expressive text */
-.fg-profile-block--motto .fg-profile-block__text{
-  color:#111318;
-}
-
-.fg-profile-modal.is-parallel .fg-profile-block--motto .fg-profile-block__text{
-  color:#fff;
-}
-
-/* Improve contrast of the divider / empty state without making them dominant */
-.fg-profile-modal__sections{
-  border-top-color:rgba(17,19,24,.18);
-}
-
-.fg-profile-modal.is-parallel .fg-profile-modal__sections{
-  border-top-color:rgba(255,255,255,.22);
-}
-
-.fg-profile-modal__empty{
-  opacity:.68;
-  font-size:14px;
-}
-
-/* Tablet/mobile: use the width for reading rather than maintaining a label column */
-@media(max-width:900px){
-  .fg-profile-block{
-    grid-template-columns:1fr;
-    gap:14px;
-    padding:28px 18px;
-    margin-inline:-18px;
-  }
-  .fg-profile-block__label span{
-    font-size:13px;
-  }
-  .fg-profile-block__text{
-    font-size:17px;
-    line-height:1.85;
-  }
-}
-
-
-/* =========================================================
-   MOBILE + IMAGE DELIVERY UPDATE / V1.6
-   ========================================================= */
-
-/* Prevent decorative hero circles from leaking into the next section. */
-.fg-manifesto{position:relative;z-index:1}
-
-/* Progressive image swap: low/medium appears immediately; sharper asset fades in. */
-.fg-progressive-img{transition:opacity .22s ease,filter .35s ease,transform .5s cubic-bezier(.2,.65,.25,1)}
-.fg-progressive-img.is-upgrading{opacity:.96}
-.fg-progressive-img.is-hires{opacity:1}
-
-@media(max-width:760px){
-  .fg-hero{
-    min-height:auto;
-    padding:72px 0 64px;
-    overflow:hidden;
-  }
-  .fg-hero::before{
-    width:210px;
-    right:-92px;
-    top:-78px;
-  }
-  .fg-hero::after{
-    width:150px;
-    left:-72px;
-    bottom:-66px;
-    opacity:.92;
-  }
-  .fg-hero__copy{margin-top:46px}
-  .fg-hero__stamp{width:82px;right:12px;bottom:12px}
-  .fg-marquee{position:relative;z-index:3}
-}
-
-/* On a real mobile viewport the profile becomes a vertical editorial story,
-   rather than a compressed desktop split-screen. */
-@media(max-width:900px){
-  .fg-profile-modal__panel{
-    display:block;
-    overflow-y:auto;
-    overscroll-behavior:contain;
-  }
-  .fg-profile-modal__media{
-    width:100%;
-    height:42svh;
-    min-height:300px;
-    max-height:460px;
-  }
-  .fg-profile-modal__media img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-  }
-  .fg-profile-modal__content{
-    min-height:auto;
-    padding-top:36px;
-  }
-}
-
-@media(max-width:430px){
-  .fg-profile-modal__media{
-    height:39svh;
-    min-height:270px;
-    max-height:390px;
-  }
-  .fg-profile-modal__content{padding-top:32px}
-  .fg-profile-modal__name{font-size:clamp(42px,13vw,56px)}
-  .fg-profile-modal__tagline{font-size:clamp(24px,7.2vw,30px)}
-}
-
+@media(prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto!important;transition:none!important}}
 </style>
-
-<div class="fg-teachers-v1" id="fg-teachers-v1">
-
-  <section class="fg-hero">
-    <div class="fg-teachers-v1__inner">
-      <div class="fg-hero__eyebrow">FUKUOKA GIRLS' COMMERCIAL HIGH SCHOOL</div>
-      <h1 class="fg-hero__title">TEACHERS<span>挑戦を楽しむ、大人たち。</span></h1>
-      <div class="fg-hero__copy">
-        <p class="fg-hero__lead">生徒に「挑戦してみよう」と言うなら、<br>まず、大人が挑戦していたい。</p>
-        <p class="fg-hero__sub">教科も、経歴も、得意なことも違う。けれど、生徒の可能性を信じ、一緒に考え、一緒に動くことは共通しています。女子商の教職員と、学校の外から学びに関わるパラレルティーチャーを紹介します。</p>
-      </div>
-    </div>
-    <div class="fg-hero__stamp" aria-hidden="true">
-      <img src="https://yashima.ac.jp/fgchs/wp-content/uploads/2026/09/download.gif" alt="">
-    </div>
-  </section>
-
-  <div class="fg-marquee" aria-hidden="true">
-    <div class="fg-marquee__track">
-      <span>CHALLENGE</span><span>DIALOGUE</span><span>CURIOSITY</span><span>LEARN TOGETHER</span><span>FUKUOKA JOSHO</span>
-      <span>CHALLENGE</span><span>DIALOGUE</span><span>CURIOSITY</span><span>LEARN TOGETHER</span><span>FUKUOKA JOSHO</span>
-    </div>
+</head>
+<body>
+<div class="page">
+<section class="hero">
+  <div class="shell">
+    <div class="hero__eyebrow">FUKUOKA GIRLS' COMMERCIAL HIGH SCHOOL / PEOPLE</div>
+    <h1 class="hero__title">TEACHERS<span class="hero__jp">挑戦を楽しむ、大人たち。</span></h1>
+    <p class="hero__copy">生徒に「挑戦してみよう」と言うなら、まず、大人が挑戦していたい。</p>
   </div>
+  <div class="hero__stamp">FGCHS<br>TEACHERS</div>
+</section>
+<div class="marquee"><div class="marquee__track">CHALLENGE &nbsp; / &nbsp; DIALOGUE &nbsp; / &nbsp; CURIOSITY &nbsp; / &nbsp; CHALLENGE &nbsp; / &nbsp; DIALOGUE &nbsp; / &nbsp; CURIOSITY &nbsp; / &nbsp; CHALLENGE &nbsp; / &nbsp; DIALOGUE &nbsp; / &nbsp; CURIOSITY &nbsp; / &nbsp; CHALLENGE &nbsp; / &nbsp; DIALOGUE &nbsp; / &nbsp; CURIOSITY</div></div>
 
-  <section class="fg-manifesto">
-    <div class="fg-teachers-v1__inner">
-      <div class="fg-section-kicker">OUR CULTURE / 01</div>
-      <div class="fg-manifesto__head">
-        <h2>先生も、<br>学び続ける人。</h2>
-        <p class="fg-manifesto__text">完成された「先生像」に自分を合わせるのではなく、それぞれの専門性や好奇心を持ち寄り、生徒とともに学校をつくっていく。女子商が大切にしたいのは、そんな大人の姿です。</p>
-      </div>
-      <div class="fg-values">
-        <article class="fg-value"><div class="fg-value__num">01 / CHALLENGE</div><div><h3>挑戦</h3><p>「できるか」より「やってみたい」を起点にする。失敗も、次の一歩につながる学びに変える。</p></div></article>
-        <article class="fg-value"><div class="fg-value__num">02 / DIALOGUE</div><div><h3>対話</h3><p>教える人と教わる人に分かれすぎない。問いを持ち寄り、違いを面白がりながら一緒に考える。</p></div></article>
-        <article class="fg-value"><div class="fg-value__num">03 / CURIOSITY</div><div><h3>好奇心</h3><p>教科の外にも飛び出す。好きなこと、社会とのつながり、まだ知らない世界を学びの入口にする。</p></div></article>
-      </div>
-    </div>
-  </section>
-
-  <section class="fg-directory" id="teachers">
-    <div class="fg-teachers-v1__inner">
-      <div class="fg-section-kicker">MEET OUR TEAM / 02</div>
-      <div class="fg-directory__top">
-        <h2 class="fg-directory__title">MEET<br>THE TEAM.</h2>
-        <div class="fg-directory__count"><span id="fgVisibleCount">0</span> PEOPLE</div>
-      </div>
-      <div class="fg-filters" id="fgFilters" aria-label="教員を担当別に絞り込む"></div>
-      <div class="fg-grid" id="fgTeacherGrid"></div>
-    </div>
-  </section>
-
-  <section class="fg-parallel" id="parallel-teachers">
-    <div class="fg-teachers-v1__inner">
-      <div class="fg-section-kicker">BEYOND THE SCHOOL / 03</div>
-      <div class="fg-parallel__head">
-        <h2 class="fg-parallel__title">PARALLEL<span>TEACHERS.</span></h2>
-        <p class="fg-parallel__intro">学校の外と、中をつなぐ大人たち。
-          <small>企業、専門職、地域、プロジェクト。学校の中だけでは出会えない知識や経験を、日常の学びへ。女子商では、さまざまなフィールドで活動する大人たちも教育チームの一員です。</small>
-        </p>
-      </div>
-      <div class="fg-parallel__meta">
-        <div class="fg-parallel__count"><span id="fgParallelCount">0</span> PARALLEL TEACHERS</div>
-        <div class="fg-parallel__line"></div>
-      </div>
-      <div class="fg-parallel__grid" id="fgParallelGrid"></div>
-      <p class="fg-parallel__note">※ 現在はプロトタイプのため、一部の肩書き・キャッチコピー・ハッシュタグはダミー情報を含みます。</p>
-    </div>
-  </section>
-
-  <section class="fg-recruit">
-    <div class="fg-teachers-v1__inner fg-recruit__inner">
-      <div>
-        <div class="fg-recruit__kicker">JOIN OUR TEAM / 04</div>
-        <h2>NEXT TEACHER,<span>MAYBE YOU.</span></h2>
-      </div>
-      <a class="fg-recruit__button" href="https://yashima.ac.jp/fgchs/?page_id=9563">教職員募集を見る <span aria-hidden="true">↗</span></a>
-    </div>
-  </section>
-
-  <div class="fg-prototype-note">
-    <div class="fg-teachers-v1__inner">PROTOTYPE V1.6 — 最新入力シートの48名を反映。カードクリックでフルスクリーンプロフィールを表示します。6名には表示確認用のダミープロフィールを入れており、未入力項目は自動的に非表示になります。</div>
+<section class="manifesto">
+ <div class="shell manifesto__grid">
+  <div>
+   <div class="kicker">OUR CULTURE / 01</div>
+   <h2>TEACH.<br>LEARN.<br>TRY.</h2>
+   <p>教える人である前に、学び続ける人でありたい。女子商には、それぞれの専門や偏愛、経験を持ち寄りながら、生徒と一緒に学校をつくる大人たちがいます。</p>
   </div>
+  <div class="values">
+   <div class="value"><strong>CHALLENGE</strong><span>まず、やってみる。失敗も次の学びに変える。</span></div>
+   <div class="value"><strong>DIALOGUE</strong><span>答えを押しつけず、対話から一緒に考える。</span></div>
+   <div class="value"><strong>CURIOSITY</strong><span>好きや違和感を、学びの入口にする。</span></div>
+  </div>
+ </div>
+</section>
+
+<section class="directory" id="teachers">
+ <div class="shell">
+  <div class="section-head">
+   <div><div class="kicker">OUR TEACHERS / 02</div><h2 class="section-title">MEET THE<br>TEACHERS.</h2></div>
+   <div class="section-count"><span id="count">0</span> PEOPLE</div>
+  </div>
+  <div class="filters" id="filters"></div>
+  <div class="grid" id="grid"></div>
+ </div>
+</section>
+
+<section class="parallel">
+ <div class="shell">
+  <div class="parallel__lead">
+   <div><div class="kicker" style="color:rgba(255,255,255,.55)">BEYOND THE SCHOOL / 03</div><h2 class="section-title">PARALLEL<br>TEACHERS.</h2></div>
+   <p>学校の外と、中をつなぐ大人たち。異なる仕事、異なる経験、異なる視点を持ちながら、女子商の学びに並走するメンバーです。</p>
+  </div>
+  <div class="section-count" style="margin-bottom:20px"><span id="pcount">0</span> PEOPLE</div>
+  <div class="parallel-grid" id="pgrid"></div>
+ </div>
+</section>
+
+<section class="join">
+ <div class="shell join__box">
+  <div><div class="kicker">JOIN OUR TEAM / 04</div><h2>WORK WITH<br>US.</h2></div>
+  <p>「挑戦を楽しめ！」を、生徒だけの言葉にしない。新しい学校を一緒につくる仲間を待っています。</p>
+ </div>
+</section>
 </div>
 
-
-  <div class="fg-profile-modal" id="fgProfileModal" aria-hidden="true">
-    <div class="fg-profile-modal__backdrop" data-profile-close></div>
-    <section class="fg-profile-modal__panel" role="dialog" aria-modal="true" aria-labelledby="fgProfileName">
-      <button class="fg-profile-modal__close" type="button" data-profile-close>× &nbsp; CLOSE</button>
-      <div class="fg-profile-modal__media" id="fgProfileMedia" data-initial="">
-        <img id="fgProfileImage" src="" alt="" hidden>
-      </div>
-      <div class="fg-profile-modal__content">
-        <div class="fg-profile-modal__topline" id="fgProfileRole"></div>
-        <h2 class="fg-profile-modal__name" id="fgProfileName"></h2>
-        <div class="fg-profile-modal__name-en" id="fgProfileNameEn"></div>
-        <div class="fg-profile-modal__tagline" id="fgProfileTagline"></div>
-        <div class="fg-profile-modal__hashtags" id="fgProfileHashtags"></div>
-        <div class="fg-profile-modal__sample" id="fgProfileSample">SAMPLE PROFILE / DUMMY DATA</div>
-
-        <div class="fg-profile-modal__sections" id="fgProfileSections">
-          <section class="fg-profile-block" data-field="whyITeach">
-            <div class="fg-profile-block__label">WHY I TEACH<span>なぜ、ここで教える／関わるのか。</span></div>
-            <p class="fg-profile-block__text"></p>
-          </section>
-          <section class="fg-profile-block" data-field="myChallenge">
-            <div class="fg-profile-block__label">MY CHALLENGE<span>今、挑戦していること。</span></div>
-            <p class="fg-profile-block__text"></p>
-          </section>
-          <section class="fg-profile-block" data-field="myFavorite">
-            <div class="fg-profile-block__label">MY FAVORITE<span>好きなこと、偏愛。</span></div>
-            <p class="fg-profile-block__text"></p>
-          </section>
-          <section class="fg-profile-block fg-profile-block--motto" data-field="myMotto">
-            <div class="fg-profile-block__label">MY MOTTO<span>大切にしている言葉。</span></div>
-            <p class="fg-profile-block__text"></p>
-          </section>
-        </div>
-        <div class="fg-profile-modal__empty" id="fgProfileEmpty">プロフィール詳細は準備中です。入力済みの項目だけがここに表示されます。</div>
-      </div>
-      <nav class="fg-profile-modal__nav" aria-label="プロフィール移動">
-        <button type="button" id="fgProfilePrev">← PREV</button>
-        <button type="button" id="fgProfileNext">NEXT →</button>
-      </nav>
-    </section>
+<div class="modal" id="modal" aria-hidden="true">
+ <div class="modal__backdrop" data-close></div>
+ <section class="modal__panel" role="dialog" aria-modal="true" aria-labelledby="modalName">
+  <button class="close" type="button" data-close>× &nbsp; CLOSE</button>
+  <div class="modal__media" id="modalMedia" data-initial=""><img id="modalImage" alt="" hidden></div>
+  <div class="modal__content">
+   <div class="modal__top" id="modalTop"></div>
+   <h2 class="modal__name" id="modalName"></h2>
+   <div class="modal__en" id="modalEn"></div>
+   <div class="modal__tagline" id="modalTagline"></div>
+   <div class="modal__tags" id="modalTags"></div>
+   <div class="sample" id="sample">SAMPLE PROFILE / DUMMY DATA</div>
+   <div class="blocks">
+    <section class="block" data-field="whyITeach"><div class="block__label">WHY I TEACH<span>なぜ、ここで教える／関わるのか。</span></div><p class="block__text"></p></section>
+    <section class="block" data-field="myChallenge"><div class="block__label">MY CHALLENGE<span>今、挑戦していること。</span></div><p class="block__text"></p></section>
+    <section class="block" data-field="myFavorite"><div class="block__label">MY FAVORITE<span>好きなこと、偏愛。</span></div><p class="block__text"></p></section>
+    <section class="block block--motto" data-field="myMotto"><div class="block__label">MY MOTTO<span>大切にしている言葉。</span></div><p class="block__text"></p></section>
+   </div>
+   <div class="empty" id="empty">プロフィール詳細は準備中です。入力済みの項目だけがここに表示されます。</div>
   </div>
+  <nav class="modal__nav"><button id="prev" type="button">← PREV</button><button id="next" type="button">NEXT →</button></nav>
+ </section>
+</div>
 
 <script>
-(() => {
-  const teachers = [
-  {
-    "sort": 10,
-    "active": true,
-    "name": "緒方 泰士",
-    "nameEn": "Yasushi Ogata",
-    "department": "management",
-    "label": "管理職",
-    "position": "校長",
-    "role": "PRINCIPAL",
-    "tagline": "学校を、次のフェーズへ。",
-    "hashtags": [
-      "学校づくり",
-      "挑戦する組織",
-      "次のフェーズ"
-    ],
-    "currentImage": "",
-    "newImage": "",
-    "image": "",
-    "imagePosition": "50% 50%",
-    "myChallenge": "",
-    "myFavorite": "",
-    "myMotto": "",
-    "note": "",
-    "profileStatus": "未入力",
-    "whyITeach": ""
-  },
-  {
-    "sort": 20,
-    "active": true,
-    "name": "徳永 道昭",
-    "nameEn": "Michiaki Tokunaga",
-    "department": "management",
-    "label": "管理職",
-    "position": "副校長",
-    "role": "VICE PRINCIPAL",
-    "tagline": "水になれ。",
-    "hashtags": [
-      "学校改革",
-      "DX",
-      "越境"
-    ],
-    "currentImage": "https://yashima.ac.jp/fgchs/wp-content/uploads/2025/05/IMG_8227-scaled-e1746701911754-300x232.jpg",
-    "newImage": "",
-    "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2025/05/IMG_8227-scaled-e1746701911754-300x232.jpg",
-    "imagePosition": "50% 50%",
-    "myChallenge": "学校のルールや仕組みを、管理のためではなく、一人ひとりが安心して挑戦するための“ガードレール”として再設計すること。",
-    "myFavorite": "新しい仕組みを考えること / 生成AI / 面白い学校を見に行くこと",
-    "myMotto": "水になれ。形に固執せず、状況に合わせて変化する。",
-    "note": "",
-    "profileStatus": "ダミー",
-    "whyITeach": "生徒に「挑戦してみよう」と言うなら、大人も変化の中にいたい。学校を完成品ではなく、みんなで更新し続けるプロジェクトとして捉え、生徒と教職員の「やってみたい」が動き出す環境をつくりたいと思っています。"
-  },
-  {
-    "sort": 30,
-    "active": true,
-    "name": "澤井 愼治",
-    "nameEn": "Shinji Sawai",
-    "department": "management",
-    "label": "管理職",
-    "position": "統括教頭",
-    "role": "VICE PRINCIPAL",
-    "tagline": "学びの舞台をつくる。",
-    "hashtags": [
-      "学びの場づくり",
-      "プロとつながる",
-      "冒険的成就"
-    ],
-    "currentImage": "https://yashima.ac.jp/fgchs/wp-content/uploads/2016/10/IMG_7470-300x225.jpg",
-    "newImage": "",
-    "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2016/10/IMG_7470-300x225.jpg",
-    "imagePosition": "50% 50%",
-    "myChallenge": "",
-    "myFavorite": "",
-    "myMotto": "",
-    "note": "",
-    "profileStatus": "未入力",
-    "whyITeach": ""
-  },
-  {
-    "sort": 40,
-    "active": true,
-    "name": "大坪 由紀",
-    "nameEn": "Yuki Ootsubo",
-    "department": "management",
-    "label": "管理職",
-    "position": "教頭",
-    "role": "MANAGEMENT",
-    "tagline": "あなたの輝きを掘り出す。",
-    "hashtags": [
-      "自分らしさ",
-      "強み発見",
-      "全力応援"
-    ],
-    "currentImage": "https://yashima.ac.jp/fgchs/wp-content/uploads/2023/04/IMG_4762-300x200.jpg",
-    "newImage": "",
-    "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2023/04/IMG_4762-300x200.jpg",
-    "imagePosition": "50% 50%",
-    "myChallenge": "",
-    "myFavorite": "",
-    "myMotto": "",
-    "note": "",
-    "profileStatus": "未入力",
-    "whyITeach": ""
-  },
-  {
-    "sort": 50,
-    "active": true,
-    "name": "室園 悟志",
-    "nameEn": "Satoshi Murozono",
-    "department": "math",
-    "label": "数学",
-    "position": "",
-    "role": "MATHEMATICS",
-    "tagline": "出逢いが、人生を拓く。",
-    "hashtags": [
-      "人との出逢い",
-      "人生一度きり",
-      "成長"
-    ],
-    "currentImage": "https://yashima.ac.jp/fgchs/wp-content/uploads/2023/04/IMG_4263-300x200.jpg",
-    "newImage": "",
-    "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2023/04/IMG_4263-300x200.jpg",
-    "imagePosition": "50% 50%",
-    "myChallenge": "",
-    "myFavorite": "",
-    "myMotto": "",
-    "note": "",
-    "profileStatus": "未入力",
-    "whyITeach": ""
-  },
-  {
-    "sort": 60,
-    "active": true,
-    "name": "石橋 千賀",
-    "nameEn": "Chika Ishibashi",
-    "department": "math",
-    "label": "数学",
-    "position": "",
-    "role": "MATHEMATICS",
-    "tagline": "好奇心から始めよう。",
-    "hashtags": [
-      "知的好奇心",
-      "探究心",
-      "挑戦"
-    ],
-    "currentImage": "https://yashima.ac.jp/fgchs/wp-content/uploads/2023/04/IMG_4853-300x200.jpg",
-    "newImage": "",
-    "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2023/04/IMG_4853-300x200.jpg",
-    "imagePosition": "50% 50%",
-    "myChallenge": "",
-    "myFavorite": "",
-    "myMotto": "",
-    "note": "",
-    "profileStatus": "未入力",
-    "whyITeach": ""
-  },
-  {
-    "sort": 70,
-    "active": true,
-    "name": "石原 洋子",
-    "nameEn": "Yoko Ishihara",
-    "department": "math",
-    "label": "数学",
-    "position": "",
-    "role": "MATHEMATICS",
-    "tagline": "数学を、数楽へ。",
-    "hashtags": [
-      "数学を数楽へ",
-      "苦手克服",
-      "一緒に考える"
-    ],
-    "currentImage": "",
-    "newImage": "",
-    "image": "",
-    "imagePosition": "50% 50%",
-    "myChallenge": "",
-    "myFavorite": "",
-    "myMotto": "",
-    "note": "",
-    "profileStatus": "未入力",
-    "whyITeach": ""
-  },
-  {
-    "sort": 80,
-    "active": true,
-    "name": "竹下 まき",
-    "nameEn": "Maki Takeshita",
-    "department": "science",
-    "label": "理科",
-    "position": "",
-    "role": "SCIENCE",
-    "tagline": "まず、自分で考えてみる。",
-    "hashtags": [
-      "考える力",
-      "日常の疑問",
-      "自己分析"
-    ],
-    "currentImage": "https://yashima.ac.jp/fgchs/wp-content/uploads/2022/04/IMG_9552-300x200.jpg",
-    "newImage": "",
-    "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2022/04/IMG_9552-300x200.jpg",
-    "imagePosition": "50% 50%",
-    "myChallenge": "",
-    "myFavorite": "",
-    "myMotto": "",
-    "note": "",
-    "profileStatus": "未入力",
-    "whyITeach": ""
-  },
-  {
-    "sort": 90,
-    "active": true,
-    "name": "池田 和貴",
-    "nameEn": "Kazuki Ikeda",
-    "department": "science",
-    "label": "理科",
-    "position": "",
-    "role": "SCIENCE / ICT",
-    "tagline": "メダカもAIも、探究の入口。",
-    "hashtags": [
-      "メダカ",
-      "ゲーム制作",
-      "AI甲子園"
-    ],
-    "currentImage": "https://yashima.ac.jp/fgchs/wp-content/uploads/2025/05/DSC_0246-300x200.jpg",
-    "newImage": "",
-    "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2025/05/DSC_0246-300x200.jpg",
-    "imagePosition": "50% 50%",
-    "myChallenge": "生成AIやゲーム制作を、生徒が“使う側”から“つくる側”へ進むための学びにつなげること。AI甲子園にも本気で挑戦したいです。",
-    "myFavorite": "メダカ / ゲーム制作 / 動画制作",
-    "myMotto": "面白そうなら、まずつくってみる。",
-    "note": "",
-    "profileStatus": "ダミー",
-    "whyITeach": "理科も情報も、「知識を覚える教科」だけではなく、身近な疑問を自分で確かめるための道具です。メダカもゲームもAIも、生徒の好奇心から学びが始まる瞬間を一緒につくりたいと思っています。"
-  },
-  {
-    "sort": 100,
-    "active": true,
-    "name": "藤本 貴佳",
-    "nameEn": "Ateka Fujimoto",
-    "department": "japanese",
-    "label": "国語",
-    "position": "",
-    "role": "JAPANESE",
-    "tagline": "挑戦する背中を支える。",
-    "hashtags": [
-      "バスケット",
-      "挑戦",
-      "生徒への誇り"
-    ],
-    "currentImage": "https://yashima.ac.jp/fgchs/wp-content/uploads/2016/10/IMG_7263.CR3_-300x200.jpg",
-    "newImage": "",
-    "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2016/10/IMG_7263.CR3_-300x200.jpg",
-    "imagePosition": "50% 50%",
-    "myChallenge": "",
-    "myFavorite": "",
-    "myMotto": "",
-    "note": "",
-    "profileStatus": "未入力",
-    "whyITeach": ""
-  },
-  {
-    "sort": 110,
-    "active": true,
-    "name": "山田 一誠",
-    "nameEn": "Issei Yamada",
-    "department": "japanese",
-    "label": "国語",
-    "position": "",
-    "role": "JAPANESE",
-    "tagline": "言葉で、人生に色を。",
-    "hashtags": [
-      "言葉",
-      "表現",
-      "人生の色"
-    ],
-    "currentImage": "https://yashima.ac.jp/fgchs/wp-content/uploads/2025/05/3831f93f8ed43b2a874a7f419e980959-scaled-e1746757030650-300x196.jpg",
-    "newImage": "",
-    "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2025/05/3831f93f8ed43b2a874a7f419e980959-scaled-e1746757030650-300x196.jpg",
-    "imagePosition": "50% 50%",
-    "myChallenge": "",
-    "myFavorite": "",
-    "myMotto": "",
-    "note": "",
-    "profileStatus": "未入力",
-    "whyITeach": ""
-  },
-  {
-    "sort": 120,
-    "active": true,
-    "name": "香月 まさみ",
-    "nameEn": "Masami Katsuki",
-    "department": "japanese",
-    "label": "国語",
-    "position": "",
-    "role": "JAPANESE",
-    "tagline": "物語は、人生の味方になる。",
-    "hashtags": [
-      "本",
-      "物語",
-      "人生の選択"
-    ],
-    "currentImage": "",
-    "newImage": "",
-    "image": "",
-    "imagePosition": "50% 50%",
-    "myChallenge": "",
-    "myFavorite": "",
-    "myMotto": "",
-    "note": "",
-    "profileStatus": "未入力",
-    "whyITeach": ""
-  },
-  {
-    "sort": 130,
-    "active": true,
-    "name": "長谷川 諒",
-    "nameEn": "Ryo Hasegawa",
-    "department": "japanese",
-    "label": "国語",
-    "position": "",
-    "role": "JAPANESE",
-    "tagline": "挑戦できる土壌を、一緒に。",
-    "hashtags": [
-      "新たな挑戦",
-      "学びの土壌",
-      "ワクワク"
-    ],
-    "currentImage": "https://yashima.ac.jp/fgchs/wp-content/uploads/2025/05/61f99be0ac68397f1a42e6d728b83eab-300x200.jpg",
-    "newImage": "",
-    "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2025/05/61f99be0ac68397f1a42e6d728b83eab-300x200.jpg",
-    "imagePosition": "50% 50%",
-    "myChallenge": "",
-    "myFavorite": "",
-    "myMotto": "",
-    "note": "",
-    "profileStatus": "未入力",
-    "whyITeach": ""
-  },
-  {
-    "sort": 140,
-    "active": true,
-    "name": "竹永 七瀬",
-    "nameEn": "Nanase Takenaga",
-    "department": "english",
-    "label": "英語",
-    "position": "",
-    "role": "ENGLISH",
-    "tagline": "「まだ」は、可能性。",
-    "hashtags": [
-      "海外留学",
-      "オーストラリア",
-      "まだできない"
-    ],
-    "currentImage": "https://yashima.ac.jp/fgchs/wp-content/uploads/2023/04/IMG_4132-200x300.jpg",
-    "newImage": "",
-    "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2023/04/IMG_4132-200x300.jpg",
-    "imagePosition": "50% 50%",
-    "myChallenge": "英語をテストのための教科ではなく、実際に誰かとつながるための言葉として使う機会をもっと学校の日常に増やすこと。",
-    "myFavorite": "海外の文化 / 旅 / 新しい人との出会い",
-    "myMotto": "“まだ”は、可能性が残っている言葉。",
-    "note": "",
-    "profileStatus": "ダミー",
-    "whyITeach": "英語が苦手だった自分にも、海外へ一歩踏み出したことで見える世界が変わった経験があります。今できないことを「できない」で終わらせず、「まだできない」と捉えられる生徒を増やしたいです。"
-  },
-  {
-    "sort": 150,
-    "active": true,
-    "name": "宮﨑 彩",
-    "nameEn": "Sayaka Miyazaki",
-    "department": "english",
-    "label": "英語",
-    "position": "",
-    "role": "ENGLISH",
-    "tagline": "自分を語れる人になろう。",
-    "hashtags": [
-      "自分を語る",
-      "挑戦経験",
-      "自己表現"
-    ],
-    "currentImage": "https://yashima.ac.jp/fgchs/wp-content/uploads/2025/05/90ceda42aeefc96bc8a63d0c642390e4-scaled-e1746756369116-300x191.jpg",
-    "newImage": "",
-    "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2025/05/90ceda42aeefc96bc8a63d0c642390e4-scaled-e1746756369116-300x191.jpg",
-    "imagePosition": "50% 50%",
-    "myChallenge": "",
-    "myFavorite": "",
-    "myMotto": "",
-    "note": "",
-    "profileStatus": "未入力",
-    "whyITeach": ""
-  },
-  {
-    "sort": 160,
-    "active": true,
-    "name": "小熊 あずさ",
-    "nameEn": "Azusa Oguma",
-    "department": "english",
-    "label": "英語",
-    "position": "",
-    "role": "ENGLISH",
-    "tagline": "英語で、世界とつながる。",
-    "hashtags": [
-      "コミュニケーション",
-      "世界とつながる",
-      "一歩踏み出す"
-    ],
-    "currentImage": "https://yashima.ac.jp/fgchs/wp-content/uploads/2026/04/1739783491933-577x1024.jpeg",
-    "newImage": "",
-    "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2026/04/1739783491933-577x1024.jpeg",
-    "imagePosition": "50% 50%",
-    "myChallenge": "",
-    "myFavorite": "",
-    "myMotto": "",
-    "note": "",
-    "profileStatus": "未入力",
-    "whyITeach": ""
-  },
-  {
-    "sort": 170,
-    "active": true,
-    "name": "安田 侑樹",
-    "nameEn": "Yuki Yasuda",
-    "department": "english",
-    "label": "英語",
-    "position": "",
-    "role": "ENGLISH",
-    "tagline": "失敗も、人生の糧になる。",
-    "hashtags": [
-      "医療機器",
-      "小学校",
-      "失敗は糧"
-    ],
-    "currentImage": "https://yashima.ac.jp/fgchs/wp-content/uploads/2025/05/3e697256cc7fd2b17262d1df4782aee4-scaled-e1746756858356-300x243.jpg",
-    "newImage": "",
-    "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2025/05/3e697256cc7fd2b17262d1df4782aee4-scaled-e1746756858356-300x243.jpg",
-    "imagePosition": "50% 50%",
-    "myChallenge": "",
-    "myFavorite": "",
-    "myMotto": "",
-    "note": "",
-    "profileStatus": "未入力",
-    "whyITeach": ""
-  },
-  {
-    "sort": 180,
-    "active": true,
-    "name": "野瀬 正樹",
-    "nameEn": "Masaki Nose",
-    "department": "english",
-    "label": "英語",
-    "position": "",
-    "role": "ENGLISH",
-    "tagline": "英語を、世界への入口に。",
-    "hashtags": [
-      "魔法のジャケット",
-      "世界とつながる",
-      "ワクワク"
-    ],
-    "currentImage": "https://yashima.ac.jp/fgchs/wp-content/uploads/2026/04/IMG_5030-768x1024.jpg",
-    "newImage": "",
-    "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2026/04/IMG_5030-768x1024.jpg",
-    "imagePosition": "50% 50%",
-    "myChallenge": "",
-    "myFavorite": "",
-    "myMotto": "",
-    "note": "",
-    "profileStatus": "未入力",
-    "whyITeach": ""
-  },
-  {
-    "sort": 190,
-    "active": true,
-    "name": "篠田 理",
-    "nameEn": "Osamu Shinoda",
-    "department": "english",
-    "label": "英語",
-    "position": "",
-    "role": "ENGLISH",
-    "tagline": "大切なことを、大切に。",
-    "hashtags": [
-      "ありがとう",
-      "大切にしたいこと",
-      "感謝"
-    ],
-    "currentImage": "https://yashima.ac.jp/fgchs/wp-content/uploads/2026/04/IMG_5005-1-768x1024.jpg",
-    "newImage": "",
-    "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2026/04/IMG_5005-1-768x1024.jpg",
-    "imagePosition": "50% 50%",
-    "myChallenge": "",
-    "myFavorite": "",
-    "myMotto": "",
-    "note": "",
-    "profileStatus": "未入力",
-    "whyITeach": ""
-  },
-  {
-    "sort": 200,
-    "active": true,
-    "name": "藤村 彩実",
-    "nameEn": "Ayami Fujimura",
-    "department": "social",
-    "label": "地歴公民",
-    "position": "",
-    "role": "SOCIAL STUDIES",
-    "tagline": "全力で、人生を楽しもう。",
-    "hashtags": [
-      "思いやり",
-      "全力",
-      "笑顔"
-    ],
-    "currentImage": "https://yashima.ac.jp/fgchs/wp-content/uploads/2026/04/DSC05280-1-1024x683.jpg",
-    "newImage": "",
-    "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2026/04/DSC05280-1-1024x683.jpg",
-    "imagePosition": "50% 50%",
-    "myChallenge": "",
-    "myFavorite": "",
-    "myMotto": "",
-    "note": "",
-    "profileStatus": "未入力",
-    "whyITeach": ""
-  },
-  {
-    "sort": 210,
-    "active": true,
-    "name": "行徳 尚文",
-    "nameEn": "Naofumi Gyotoku",
-    "department": "social",
-    "label": "地歴公民",
-    "position": "",
-    "role": "SOCIAL STUDIES",
-    "tagline": "世界50カ国、その先の地理へ。",
-    "hashtags": [
-      "世界50カ国",
-      "旅行会社35年",
-      "中国生活"
-    ],
-    "currentImage": "https://yashima.ac.jp/fgchs/wp-content/uploads/2025/12/e4b127c8aba9e08cc96de04cdd18f2c6.png",
-    "newImage": "",
-    "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2025/12/e4b127c8aba9e08cc96de04cdd18f2c6.png",
-    "imagePosition": "50% 50%",
-    "myChallenge": "旅や仕事で得たリアルな経験を、教科書の知識と結びつけて、生徒が世界を立体的に捉えられる授業にすること。",
-    "myFavorite": "旅行 / 地図 / 異文化 / まだ行ったことのない場所",
-    "myMotto": "井の中の蛙、大海を知らず。",
-    "note": "",
-    "profileStatus": "ダミー",
-    "whyITeach": "世界を歩くと、自分が当たり前だと思っていたことが簡単にひっくり返ります。地理の授業を通じて、生徒が自分の世界を少し広げ、知らない価値観に出会うきっかけをつくりたいです。"
-  },
-  {
-    "sort": 220,
-    "active": true,
-    "name": "川村 周平",
-    "nameEn": "Shuhei Kawamura",
-    "department": "social",
-    "label": "地歴公民",
-    "position": "",
-    "role": "SOCIAL STUDIES",
-    "tagline": "好奇心を、学びの冒険へ。",
-    "hashtags": [
-      "好奇心",
-      "学びの冒険",
-      "自由に知る"
-    ],
-    "currentImage": "https://yashima.ac.jp/fgchs/wp-content/uploads/2025/12/DSC_0234-2-scaled.jpg",
-    "newImage": "",
-    "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2025/12/DSC_0234-2-scaled.jpg",
-    "imagePosition": "50% 50%",
-    "myChallenge": "",
-    "myFavorite": "",
-    "myMotto": "",
-    "note": "",
-    "profileStatus": "未入力",
-    "whyITeach": ""
-  },
-  {
-    "sort": 230,
-    "active": true,
-    "name": "長友 世渚",
-    "nameEn": "Sena Nagatomo",
-    "department": "social",
-    "label": "地歴公民",
-    "position": "",
-    "role": "SOCIAL STUDIES",
-    "tagline": "人生に、胸躍るストーリーを。",
-    "hashtags": [
-      "人生は一冊の本",
-      "失敗を恐れない",
-      "ストーリー"
-    ],
-    "currentImage": "https://yashima.ac.jp/fgchs/wp-content/uploads/2025/12/686be9699e998a81e02a6df5f30e3e1c.png",
-    "newImage": "",
-    "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2025/12/686be9699e998a81e02a6df5f30e3e1c.png",
-    "imagePosition": "50% 50%",
-    "myChallenge": "",
-    "myFavorite": "",
-    "myMotto": "",
-    "note": "",
-    "profileStatus": "未入力",
-    "whyITeach": ""
-  },
-  {
-    "sort": 240,
-    "active": true,
-    "name": "福原 栞",
-    "nameEn": "Shiori Fukuhara",
-    "department": "business",
-    "label": "商業",
-    "position": "",
-    "role": "BUSINESS",
-    "tagline": "簿記は武器。",
-    "hashtags": [
-      "簿記は武器",
-      "お金",
-      "ビジネス"
-    ],
-    "currentImage": "https://yashima.ac.jp/fgchs/wp-content/uploads/2023/04/IMG_4612-200x300.jpg",
-    "newImage": "",
-    "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2023/04/IMG_4612-200x300.jpg",
-    "imagePosition": "50% 50%",
-    "myChallenge": "「簿記は苦手」と感じる生徒にも、学んだことが実社会とつながった瞬間の面白さを届けること。",
-    "myFavorite": "お金の仕組み / ビジネス / 分かりやすく説明すること",
-    "myMotto": "簿記は武器。",
-    "note": "",
-    "profileStatus": "ダミー",
-    "whyITeach": "簿記は資格を取るためだけの学びではなく、会社や社会を読み解くための言語だと思っています。数字の向こう側にいる人や仕事まで想像できるようになると、商業はぐっと面白くなります。"
-  },
-  {
-    "sort": 250,
-    "active": true,
-    "name": "宮﨑 珠美",
-    "nameEn": "Tamami Miyazaki",
-    "department": "business",
-    "label": "商業",
-    "position": "",
-    "role": "BUSINESS",
-    "tagline": "生きた商業を、社会と学ぶ。",
-    "hashtags": [
-      "マーケティング",
-      "ビジネスビューティー",
-      "起業家精神"
-    ],
-    "currentImage": "https://yashima.ac.jp/fgchs/wp-content/uploads/2016/10/IMG_7619-300x225.jpg",
-    "newImage": "",
-    "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2016/10/IMG_7619-300x225.jpg",
-    "imagePosition": "50% 50%",
-    "myChallenge": "",
-    "myFavorite": "",
-    "myMotto": "",
-    "note": "",
-    "profileStatus": "未入力",
-    "whyITeach": ""
-  },
-  {
-    "sort": 260,
-    "active": true,
-    "name": "仙石 由香",
-    "nameEn": "Yuka Sengoku",
-    "department": "business",
-    "label": "商業",
-    "position": "",
-    "role": "BUSINESS",
-    "tagline": "100円を1000円にする発想。",
-    "hashtags": [
-      "起業",
-      "マーケティング",
-      "経営"
-    ],
-    "currentImage": "https://yashima.ac.jp/fgchs/wp-content/uploads/2022/06/IMG_2387-1-300x200.jpg",
-    "newImage": "",
-    "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2022/06/IMG_2387-1-300x200.jpg",
-    "imagePosition": "50% 50%",
-    "myChallenge": "",
-    "myFavorite": "",
-    "myMotto": "",
-    "note": "",
-    "profileStatus": "未入力",
-    "whyITeach": ""
-  },
-  {
-    "sort": 270,
-    "active": true,
-    "name": "丸山 愛子",
-    "nameEn": "Aiko Maruyama",
-    "department": "business",
-    "label": "商業",
-    "position": "",
-    "role": "BUSINESS / ICT",
-    "tagline": "失敗は、一生の財産になる。",
-    "hashtags": [
-      "Chromebook",
-      "情報処理",
-      "失敗は財産"
-    ],
-    "currentImage": "https://yashima.ac.jp/fgchs/wp-content/uploads/2023/04/IMG_4027-300x200.jpg",
-    "newImage": "",
-    "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2023/04/IMG_4027-300x200.jpg",
-    "imagePosition": "50% 50%",
-    "myChallenge": "",
-    "myFavorite": "",
-    "myMotto": "",
-    "note": "",
-    "profileStatus": "未入力",
-    "whyITeach": ""
-  },
-  {
-    "sort": 280,
-    "active": true,
-    "name": "千葉 直輝",
-    "nameEn": "Naoki Chiba",
-    "department": "business",
-    "label": "商業",
-    "position": "",
-    "role": "BUSINESS",
-    "tagline": "人生、楽しんだもん勝ち。",
-    "hashtags": [
-      "人生楽しんだもん勝ち",
-      "挑戦",
-      "一緒に探す"
-    ],
-    "currentImage": "https://yashima.ac.jp/fgchs/wp-content/uploads/2026/04/DSC05273-1-1024x683.jpeg",
-    "newImage": "",
-    "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2026/04/DSC05273-1-1024x683.jpeg",
-    "imagePosition": "50% 50%",
-    "myChallenge": "",
-    "myFavorite": "",
-    "myMotto": "",
-    "note": "",
-    "profileStatus": "未入力",
-    "whyITeach": ""
-  },
-  {
-    "sort": 290,
-    "active": true,
-    "name": "越山 瑠唯",
-    "nameEn": "Rui Koshiyama",
-    "department": "business",
-    "label": "商業・情報",
-    "position": "",
-    "role": "BUSINESS / ICT",
-    "tagline": "まず、話を聞くところから。",
-    "hashtags": [
-      "商業情報",
-      "生徒を否定しない",
-      "対話"
-    ],
-    "currentImage": "https://yashima.ac.jp/fgchs/wp-content/uploads/2025/05/ea8c129c3e6ec4d87823b0b6bb4ca1a0-scaled-e1746756484818-300x193.jpg",
-    "newImage": "",
-    "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2025/05/ea8c129c3e6ec4d87823b0b6bb4ca1a0-scaled-e1746756484818-300x193.jpg",
-    "imagePosition": "50% 50%",
-    "myChallenge": "",
-    "myFavorite": "",
-    "myMotto": "",
-    "note": "",
-    "profileStatus": "未入力",
-    "whyITeach": ""
-  },
-  {
-    "sort": 300,
-    "active": true,
-    "name": "竹之下 想馬",
-    "nameEn": "Souma Takenoshita",
-    "department": "business",
-    "label": "商業",
-    "position": "",
-    "role": "BUSINESS",
-    "tagline": "簿記から、社会を見る力へ。",
-    "hashtags": [
-      "簿記",
-      "実践的スキル",
-      "多角的視点"
-    ],
-    "currentImage": "https://yashima.ac.jp/fgchs/wp-content/uploads/2025/05/356805f932e940f988d68032495bcfb2-scaled-e1746756512611-273x300.jpg",
-    "newImage": "",
-    "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2025/05/356805f932e940f988d68032495bcfb2-scaled-e1746756512611-273x300.jpg",
-    "imagePosition": "50% 50%",
-    "myChallenge": "",
-    "myFavorite": "",
-    "myMotto": "",
-    "note": "",
-    "profileStatus": "未入力",
-    "whyITeach": ""
-  },
-  {
-    "sort": 310,
-    "active": true,
-    "name": "杉原 壮",
-    "nameEn": "Takeshi Sugihara",
-    "department": "business",
-    "label": "商業",
-    "position": "",
-    "role": "BUSINESS",
-    "tagline": "くすぶる心に、火をつける。",
-    "hashtags": [
-      "くすぶる心に火を",
-      "商業",
-      "プロジェクト"
-    ],
-    "currentImage": "https://yashima.ac.jp/fgchs/wp-content/uploads/2025/05/f83602da6cf44219e1777f75385e63bc-scaled-e1746756763839-300x212.jpg",
-    "newImage": "",
-    "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2025/05/f83602da6cf44219e1777f75385e63bc-scaled-e1746756763839-300x212.jpg",
-    "imagePosition": "50% 50%",
-    "myChallenge": "",
-    "myFavorite": "",
-    "myMotto": "",
-    "note": "",
-    "profileStatus": "未入力",
-    "whyITeach": ""
-  },
-  {
-    "sort": 320,
-    "active": true,
-    "name": "山崎 隼之介",
-    "nameEn": "Junnosuke Yamazaki",
-    "department": "business",
-    "label": "商業・情報",
-    "position": "",
-    "role": "BUSINESS / ICT",
-    "tagline": "AI×情報×数学で挑戦を後押し。",
-    "hashtags": [
-      "AI",
-      "情報",
-      "数学"
-    ],
-    "currentImage": "https://yashima.ac.jp/fgchs/wp-content/uploads/2026/04/IMG_5040-1024x768.jpg",
-    "newImage": "",
-    "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2026/04/IMG_5040-1024x768.jpg",
-    "imagePosition": "50% 50%",
-    "myChallenge": "",
-    "myFavorite": "",
-    "myMotto": "",
-    "note": "",
-    "profileStatus": "未入力",
-    "whyITeach": ""
-  },
-  {
-    "sort": 330,
-    "active": true,
-    "name": "平田 佑太朗",
-    "nameEn": "Yuutaro Hirata",
-    "department": "business",
-    "label": "商業",
-    "position": "",
-    "role": "BUSINESS",
-    "tagline": "「やればよかった」をなくす。",
-    "hashtags": [
-      "人生楽しんだもん勝ち",
-      "後悔しない選択",
-      "やってよかった"
-    ],
-    "currentImage": "https://yashima.ac.jp/fgchs/wp-content/uploads/2026/08/Image_20260827_075914_488-225x300.jpeg",
-    "newImage": "",
-    "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2026/08/Image_20260827_075914_488-225x300.jpeg",
-    "imagePosition": "50% 50%",
-    "myChallenge": "",
-    "myFavorite": "",
-    "myMotto": "",
-    "note": "",
-    "profileStatus": "未入力",
-    "whyITeach": ""
-  },
-  {
-    "sort": 340,
-    "active": true,
-    "name": "坂井 幸美",
-    "nameEn": "Yukimi Sakai",
-    "department": "pe",
-    "label": "保健体育",
-    "position": "",
-    "role": "HEALTH / PE",
-    "tagline": "自分の人生を、自分で選ぶ。",
-    "hashtags": [
-      "心と体",
-      "自分で選ぶ",
-      "共に成長"
-    ],
-    "currentImage": "",
-    "newImage": "",
-    "image": "",
-    "imagePosition": "50% 50%",
-    "myChallenge": "",
-    "myFavorite": "",
-    "myMotto": "",
-    "note": "",
-    "profileStatus": "未入力",
-    "whyITeach": ""
-  },
-  {
-    "sort": 350,
-    "active": true,
-    "name": "藤 紗織",
-    "nameEn": "Saori To",
-    "department": "pe",
-    "label": "保健体育",
-    "position": "",
-    "role": "HEALTH / PE",
-    "tagline": "体を動かす楽しさから。",
-    "hashtags": [
-      "バスケットボール",
-      "体を動かす楽しさ",
-      "仲間を尊重"
-    ],
-    "currentImage": "https://yashima.ac.jp/fgchs/wp-content/uploads/2016/10/IMG_6898-scaled-e1631771718898-220x300.jpg",
-    "newImage": "",
-    "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2016/10/IMG_6898-scaled-e1631771718898-220x300.jpg",
-    "imagePosition": "50% 50%",
-    "myChallenge": "",
-    "myFavorite": "",
-    "myMotto": "",
-    "note": "",
-    "profileStatus": "未入力",
-    "whyITeach": ""
-  },
-  {
-    "sort": 360,
-    "active": true,
-    "name": "鈴木 優太",
-    "nameEn": "Yuta Suzuki",
-    "department": "pe",
-    "label": "保健体育",
-    "position": "",
-    "role": "HEALTH / PE",
-    "tagline": "成功も失敗も、全部経験。",
-    "hashtags": [
-      "チャレンジ",
-      "成功体験",
-      "失敗体験"
-    ],
-    "currentImage": "",
-    "newImage": "",
-    "image": "",
-    "imagePosition": "50% 50%",
-    "myChallenge": "",
-    "myFavorite": "",
-    "myMotto": "",
-    "note": "",
-    "profileStatus": "未入力",
-    "whyITeach": ""
-  },
-  {
-    "sort": 370,
-    "active": true,
-    "name": "藤竹 瞭",
-    "nameEn": "Ryo Fujitake",
-    "department": "pe",
-    "label": "保健体育",
-    "position": "",
-    "role": "HEALTH / PE",
-    "tagline": "幸せに生きるための体育。",
-    "hashtags": [
-      "幸せに生きる",
-      "健康",
-      "保健体育"
-    ],
-    "currentImage": "https://yashima.ac.jp/fgchs/wp-content/uploads/2026/04/IMG_0874.jpg",
-    "newImage": "",
-    "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2026/04/IMG_0874.jpg",
-    "imagePosition": "50% 50%",
-    "myChallenge": "",
-    "myFavorite": "",
-    "myMotto": "",
-    "note": "",
-    "profileStatus": "未入力",
-    "whyITeach": ""
-  },
-  {
-    "sort": 380,
-    "active": true,
-    "name": "牛込 紘太",
-    "nameEn": "Kouta Ushigome",
-    "department": "inquiry",
-    "label": "探究",
-    "position": "",
-    "role": "INQUIRY",
-    "tagline": "正解のない問いを楽しむ。",
-    "hashtags": [
-      "探究",
-      "言語化",
-      "とりあえずやってみる"
-    ],
-    "currentImage": "https://yashima.ac.jp/fgchs/wp-content/uploads/2026/04/IMG_5011-768x1024.jpg",
-    "newImage": "",
-    "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2026/04/IMG_5011-768x1024.jpg",
-    "imagePosition": "50% 50%",
-    "myChallenge": "",
-    "myFavorite": "",
-    "myMotto": "",
-    "note": "",
-    "profileStatus": "未入力",
-    "whyITeach": ""
-  },
-  {
-    "sort": 390,
-    "active": true,
-    "name": "福田 未来",
-    "nameEn": "Miki Fukuda",
-    "department": "home",
-    "label": "家庭",
-    "position": "",
-    "role": "HOME ECONOMICS",
-    "tagline": "なんとかなる。やってみよう。",
-    "hashtags": [
-      "人生なんとかなる",
-      "やりたいこと",
-      "少しの勇気"
-    ],
-    "currentImage": "https://yashima.ac.jp/fgchs/wp-content/uploads/2026/04/IMG_5019-768x1024.jpg",
-    "newImage": "",
-    "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2026/04/IMG_5019-768x1024.jpg",
-    "imagePosition": "50% 50%",
-    "myChallenge": "",
-    "myFavorite": "",
-    "myMotto": "",
-    "note": "",
-    "profileStatus": "未入力",
-    "whyITeach": ""
-  },
-  {
-    "sort": 400,
-    "active": true,
-    "name": "島田 晴海",
-    "nameEn": "Harumi Shimada",
-    "department": "health",
-    "label": "養護",
-    "position": "養護教諭",
-    "role": "SCHOOL HEALTH",
-    "tagline": "健康は、挑戦の土台。",
-    "hashtags": [
-      "健康",
-      "人生をデザイン",
-      "挑戦の土台"
-    ],
-    "currentImage": "https://yashima.ac.jp/fgchs/wp-content/uploads/2026/04/IMG_8295-1024x819.jpg",
-    "newImage": "",
-    "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2026/04/IMG_8295-1024x819.jpg",
-    "imagePosition": "50% 50%",
-    "myChallenge": "",
-    "myFavorite": "",
-    "myMotto": "",
-    "note": "",
-    "profileStatus": "未入力",
-    "whyITeach": ""
-  },
-  {
-    "sort": 410,
-    "active": true,
-    "name": "安澤 萌花",
-    "nameEn": "Moeka Yasuzawa",
-    "department": "health",
-    "label": "養護",
-    "position": "養護教諭",
-    "role": "SCHOOL HEALTH",
-    "tagline": "",
-    "hashtags": [],
-    "currentImage": "",
-    "newImage": "",
-    "image": "",
-    "imagePosition": "50% 50%",
-    "myChallenge": "",
-    "myFavorite": "",
-    "myMotto": "",
-    "note": "",
-    "profileStatus": "未入力",
-    "whyITeach": ""
-  },
-  {
-    "sort": 500,
-    "active": true,
-    "name": "柴山 翔太",
-    "nameEn": "Shota Shibayama",
-    "department": "specials",
-    "label": "パラレルティーチャー",
-    "position": "フェロー",
-    "role": "SPECIALS",
-    "tagline": "君も校長やればいい。",
-    "hashtags": [
-      "イカ",
-      "ヒラメ"
-    ],
-    "currentImage": "",
-    "newImage": "",
-    "image": "",
-    "imagePosition": "50% 50%",
-    "myChallenge": "学校外の人・企業・プロジェクトと女子商をつなぎ、“先生”という言葉の意味そのものを広げていくこと。",
-    "myFavorite": "新しい教育の仕組み / 人をつなぐこと / イカ",
-    "myMotto": "君も校長やればいい。",
-    "note": "",
-    "profileStatus": "ダミー",
-    "whyITeach": "学校の内側だけで教育を完結させず、社会で挑戦している大人と生徒が日常的に出会える環境をつくることで、進路や生き方の選択肢はもっと広がると考えています。"
-  },
-  {
-    "sort": 510,
-    "active": true,
-    "name": "高石 大道",
-    "nameEn": "Daido Takaishi",
-    "department": "specials",
-    "label": "パラレルティーチャー",
-    "position": "DDP",
-    "role": "SPECIALS",
-    "tagline": "はい、学びぃ〜",
-    "hashtags": [
-      "引率"
-    ],
-    "currentImage": "",
-    "newImage": "",
-    "image": "",
-    "imagePosition": "50% 50%",
-    "myChallenge": "",
-    "myFavorite": "",
-    "myMotto": "",
-    "note": "",
-    "profileStatus": "未入力",
-    "whyITeach": ""
-  },
-  {
-    "sort": 520,
-    "active": true,
-    "name": "吉本 悟",
-    "nameEn": "Satoru Yoshimoto",
-    "department": "specials",
-    "label": "パラレルティーチャー",
-    "position": "Learning Conductor",
-    "role": "SPECIALS",
-    "tagline": "遊ぶと学ぶを類義語に",
-    "hashtags": [
-      "IDE",
-      "GEG"
-    ],
-    "currentImage": "",
-    "newImage": "",
-    "image": "",
-    "imagePosition": "50% 50%",
-    "myChallenge": "",
-    "myFavorite": "",
-    "myMotto": "",
-    "note": "",
-    "profileStatus": "未入力",
-    "whyITeach": ""
-  },
-  {
-    "sort": 530,
-    "active": true,
-    "name": "鈴木 卓也",
-    "nameEn": "Takuya Suzuki",
-    "department": "specials",
-    "label": "パラレルティーチャー",
-    "position": "公認会計士",
-    "role": "SPECIALS",
-    "tagline": "",
-    "hashtags": [
-      "簿記",
-      "学校会計"
-    ],
-    "currentImage": "",
-    "newImage": "",
-    "image": "",
-    "imagePosition": "50% 50%",
-    "myChallenge": "",
-    "myFavorite": "",
-    "myMotto": "",
-    "note": "",
-    "profileStatus": "未入力",
-    "whyITeach": ""
-  },
-  {
-    "sort": 540,
-    "active": true,
-    "name": "竹山 祥世",
-    "nameEn": "Sachiyo Takeyama",
-    "department": "specials",
-    "label": "パラレルティーチャー",
-    "position": "ひきだし",
-    "role": "SPECIALS",
-    "tagline": "",
-    "hashtags": [
-      "国家資格",
-      "キャリア",
-      "コンサルタント"
-    ],
-    "currentImage": "",
-    "newImage": "",
-    "image": "",
-    "imagePosition": "50% 50%",
-    "myChallenge": "",
-    "myFavorite": "",
-    "myMotto": "",
-    "note": "",
-    "profileStatus": "未入力",
-    "whyITeach": ""
-  },
-  {
-    "sort": 550,
-    "active": true,
-    "name": "勝田 浩次",
-    "nameEn": "Hirotsugu Katsuta",
-    "department": "specials",
-    "label": "パラレルティーチャー",
-    "position": "",
-    "role": "SPECIALS",
-    "tagline": "",
-    "hashtags": [],
-    "currentImage": "",
-    "newImage": "",
-    "image": "",
-    "imagePosition": "50% 50%",
-    "myChallenge": "",
-    "myFavorite": "",
-    "myMotto": "",
-    "note": "",
-    "profileStatus": "未入力",
-    "whyITeach": ""
-  },
-  {
-    "sort": 560,
-    "active": true,
-    "name": "細川 凌平",
-    "nameEn": "Ryohei Hosokawa",
-    "department": "specials",
-    "label": "パラレルティーチャー",
-    "position": "キムチ",
-    "role": "SPECIALS",
-    "tagline": "",
-    "hashtags": [
-      "キムチ１",
-      "キムチ２",
-      "キムチ３"
-    ],
-    "currentImage": "",
-    "newImage": "",
-    "image": "",
-    "imagePosition": "50% 50%",
-    "myChallenge": "",
-    "myFavorite": "",
-    "myMotto": "",
-    "note": "",
-    "profileStatus": "未入力",
-    "whyITeach": ""
-  }
-];
+const teachers=[{"sort": 10, "active": true, "name": "緒方 泰士", "nameEn": "Yasushi Ogata", "department": "management", "label": "管理職", "position": "校長", "role": "PRINCIPAL", "tagline": "学校を、次のフェーズへ。", "hashtags": ["学校づくり", "挑戦する組織", "次のフェーズ"], "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2026/09/DSC05897-scaled.jpeg", "cardImagePosition": "50% 50%", "profileImagePosition": "50% 50%", "profileStatus": "未入力", "whyITeach": "", "myChallenge": "", "myFavorite": "", "myMotto": ""}, {"sort": 20, "active": true, "name": "徳永 道昭", "nameEn": "Michiaki Tokunaga", "department": "management", "label": "管理職", "position": "副校長", "role": "VICE PRINCIPAL", "tagline": "水になれ。", "hashtags": ["学校改革", "DX", "越境"], "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2025/05/IMG_8227-scaled-e1746701911754-300x232.jpg", "cardImagePosition": "40% 50%", "profileImagePosition": "20% 50%", "profileStatus": "ダミー", "whyITeach": "生徒に「挑戦してみよう」と言うなら、大人も変化の中にいたい。学校を完成品ではなく、みんなで更新し続けるプロジェクトとして捉え、生徒と教職員の「やってみたい」が動き出す環境をつくりたいと思っています。", "myChallenge": "学校のルールや仕組みを、管理のためではなく、一人ひとりが安心して挑戦するための“ガードレール”として再設計すること。", "myFavorite": "新しい仕組みを考えること / 生成AI / 面白い学校を見に行くこと", "myMotto": "水になれ。形に固執せず、状況に合わせて変化する。"}, {"sort": 30, "active": true, "name": "澤井 愼治", "nameEn": "Shinji Sawai", "department": "management", "label": "管理職", "position": "統括教頭", "role": "VICE PRINCIPAL", "tagline": "学びの舞台をつくる。", "hashtags": ["学びの場づくり", "プロとつながる", "冒険的成就"], "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2016/10/IMG_7470-300x225.jpg", "cardImagePosition": "50% 60%", "profileImagePosition": "50% 50%", "profileStatus": "未入力", "whyITeach": "", "myChallenge": "", "myFavorite": "", "myMotto": ""}, {"sort": 40, "active": true, "name": "大坪 由紀", "nameEn": "Yuki Ootsubo", "department": "management", "label": "管理職", "position": "教頭", "role": "MANAGEMENT", "tagline": "あなたの輝きを掘り出す。", "hashtags": ["自分らしさ", "強み発見", "全力応援"], "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2023/04/IMG_4762-300x200.jpg", "cardImagePosition": "50% 50%", "profileImagePosition": "50% 50%", "profileStatus": "未入力", "whyITeach": "", "myChallenge": "", "myFavorite": "", "myMotto": ""}, {"sort": 50, "active": true, "name": "室園 悟志", "nameEn": "Satoshi Murozono", "department": "math", "label": "数学", "position": "", "role": "MATHEMATICS", "tagline": "出逢いが、人生を拓く。", "hashtags": ["人との出逢い", "人生一度きり", "成長"], "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2023/04/IMG_4263-300x200.jpg", "cardImagePosition": "50% 50%", "profileImagePosition": "50% 50%", "profileStatus": "未入力", "whyITeach": "", "myChallenge": "", "myFavorite": "", "myMotto": ""}, {"sort": 60, "active": true, "name": "石橋 千賀", "nameEn": "Chika Ishibashi", "department": "math", "label": "数学", "position": "", "role": "MATHEMATICS", "tagline": "好奇心から始めよう。", "hashtags": ["知的好奇心", "探究心", "挑戦"], "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2023/04/IMG_4853-300x200.jpg", "cardImagePosition": "50% 50%", "profileImagePosition": "50% 50%", "profileStatus": "未入力", "whyITeach": "", "myChallenge": "", "myFavorite": "", "myMotto": ""}, {"sort": 70, "active": true, "name": "石原 洋子", "nameEn": "Yoko Ishihara", "department": "math", "label": "数学", "position": "", "role": "MATHEMATICS", "tagline": "数学を、数楽へ。", "hashtags": ["数学を数楽へ", "苦手克服", "一緒に考える"], "image": "", "cardImagePosition": "50% 50%", "profileImagePosition": "50% 50%", "profileStatus": "未入力", "whyITeach": "", "myChallenge": "", "myFavorite": "", "myMotto": ""}, {"sort": 80, "active": true, "name": "竹下 まき", "nameEn": "Maki Takeshita", "department": "science", "label": "理科", "position": "", "role": "SCIENCE", "tagline": "まず、自分で考えてみる。", "hashtags": ["考える力", "日常の疑問", "自己分析"], "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2022/04/IMG_9552-300x200.jpg", "cardImagePosition": "50% 50%", "profileImagePosition": "50% 50%", "profileStatus": "未入力", "whyITeach": "", "myChallenge": "", "myFavorite": "", "myMotto": ""}, {"sort": 90, "active": true, "name": "池田 和貴", "nameEn": "Kazuki Ikeda", "department": "science", "label": "理科", "position": "", "role": "SCIENCE / ICT", "tagline": "メダカもAIも、探究の入口。", "hashtags": ["メダカ", "ゲーム制作", "AI甲子園"], "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2025/05/DSC_0246-300x200.jpg", "cardImagePosition": "50% 50%", "profileImagePosition": "50% 50%", "profileStatus": "ダミー", "whyITeach": "理科も情報も、「知識を覚える教科」だけではなく、身近な疑問を自分で確かめるための道具です。メダカもゲームもAIも、生徒の好奇心から学びが始まる瞬間を一緒につくりたいと思っています。", "myChallenge": "生成AIやゲーム制作を、生徒が“使う側”から“つくる側”へ進むための学びにつなげること。AI甲子園にも本気で挑戦したいです。", "myFavorite": "メダカ / ゲーム制作 / 動画制作", "myMotto": "面白そうなら、まずつくってみる。"}, {"sort": 100, "active": true, "name": "藤本 貴佳", "nameEn": "Ateka Fujimoto", "department": "japanese", "label": "国語", "position": "", "role": "JAPANESE", "tagline": "挑戦する背中を支える。", "hashtags": ["バスケット", "挑戦", "生徒への誇り"], "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2016/10/IMG_7263.CR3_-300x200.jpg", "cardImagePosition": "50% 50%", "profileImagePosition": "80% 50%", "profileStatus": "未入力", "whyITeach": "", "myChallenge": "", "myFavorite": "", "myMotto": ""}, {"sort": 110, "active": true, "name": "山田 一誠", "nameEn": "Issei Yamada", "department": "japanese", "label": "国語", "position": "", "role": "JAPANESE", "tagline": "言葉で、人生に色を。", "hashtags": ["言葉", "表現", "人生の色"], "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2025/05/3831f93f8ed43b2a874a7f419e980959-scaled-e1746757030650-300x196.jpg", "cardImagePosition": "50% 50%", "profileImagePosition": "50% 50%", "profileStatus": "未入力", "whyITeach": "", "myChallenge": "", "myFavorite": "", "myMotto": ""}, {"sort": 120, "active": true, "name": "香月 まさみ", "nameEn": "Masami Katsuki", "department": "japanese", "label": "国語", "position": "", "role": "JAPANESE", "tagline": "物語は、人生の味方になる。", "hashtags": ["本", "物語", "人生の選択"], "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2024/04/IMG_0816-300x200.jpg", "cardImagePosition": "50% 50%", "profileImagePosition": "50% 50%", "profileStatus": "未入力", "whyITeach": "", "myChallenge": "", "myFavorite": "", "myMotto": ""}, {"sort": 130, "active": true, "name": "長谷川 諒", "nameEn": "Ryo Hasegawa", "department": "japanese", "label": "国語", "position": "", "role": "JAPANESE", "tagline": "挑戦できる土壌を、一緒に。", "hashtags": ["新たな挑戦", "学びの土壌", "ワクワク"], "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2025/05/61f99be0ac68397f1a42e6d728b83eab-300x200.jpg", "cardImagePosition": "50% 50%", "profileImagePosition": "50% 50%", "profileStatus": "未入力", "whyITeach": "", "myChallenge": "", "myFavorite": "", "myMotto": ""}, {"sort": 140, "active": true, "name": "竹永 七瀬", "nameEn": "Nanase Takenaga", "department": "english", "label": "英語", "position": "", "role": "ENGLISH", "tagline": "「まだ」は、可能性。", "hashtags": ["海外留学", "オーストラリア", "まだできない"], "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2023/04/IMG_4132-200x300.jpg", "cardImagePosition": "50% 50%", "profileImagePosition": "50% 50%", "profileStatus": "ダミー", "whyITeach": "英語が苦手だった自分にも、海外へ一歩踏み出したことで見える世界が変わった経験があります。今できないことを「できない」で終わらせず、「まだできない」と捉えられる生徒を増やしたいです。", "myChallenge": "英語をテストのための教科ではなく、実際に誰かとつながるための言葉として使う機会をもっと学校の日常に増やすこと。", "myFavorite": "海外の文化 / 旅 / 新しい人との出会い", "myMotto": "“まだ”は、可能性が残っている言葉。"}, {"sort": 150, "active": true, "name": "宮﨑 彩", "nameEn": "Sayaka Miyazaki", "department": "english", "label": "英語", "position": "", "role": "ENGLISH", "tagline": "自分を語れる人になろう。", "hashtags": ["自分を語る", "挑戦経験", "自己表現"], "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2025/05/90ceda42aeefc96bc8a63d0c642390e4-scaled-e1746756369116-300x191.jpg", "cardImagePosition": "50% 50%", "profileImagePosition": "50% 50%", "profileStatus": "未入力", "whyITeach": "", "myChallenge": "", "myFavorite": "", "myMotto": ""}, {"sort": 160, "active": true, "name": "小熊 あずさ", "nameEn": "Azusa Oguma", "department": "english", "label": "英語", "position": "", "role": "ENGLISH", "tagline": "英語で、世界とつながる。", "hashtags": ["コミュニケーション", "世界とつながる", "一歩踏み出す"], "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2026/04/1739783491933-577x1024.jpeg", "cardImagePosition": "50% 50%", "profileImagePosition": "50% 50%", "profileStatus": "未入力", "whyITeach": "", "myChallenge": "", "myFavorite": "", "myMotto": ""}, {"sort": 170, "active": true, "name": "安田 侑樹", "nameEn": "Yuki Yasuda", "department": "english", "label": "英語", "position": "", "role": "ENGLISH", "tagline": "失敗も、人生の糧になる。", "hashtags": ["医療機器", "小学校", "失敗は糧"], "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2025/05/3e697256cc7fd2b17262d1df4782aee4-scaled-e1746756858356-300x243.jpg", "cardImagePosition": "50% 50%", "profileImagePosition": "50% 50%", "profileStatus": "未入力", "whyITeach": "", "myChallenge": "", "myFavorite": "", "myMotto": ""}, {"sort": 180, "active": true, "name": "野瀬 正樹", "nameEn": "Masaki Nose", "department": "english", "label": "英語", "position": "", "role": "ENGLISH", "tagline": "英語を、世界への入口に。", "hashtags": ["魔法のジャケット", "世界とつながる", "ワクワク"], "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2026/04/IMG_5030-768x1024.jpg", "cardImagePosition": "50% 50%", "profileImagePosition": "50% 50%", "profileStatus": "未入力", "whyITeach": "", "myChallenge": "", "myFavorite": "", "myMotto": ""}, {"sort": 190, "active": true, "name": "篠田 理", "nameEn": "Osamu Shinoda", "department": "english", "label": "英語", "position": "", "role": "ENGLISH", "tagline": "大切なことを、大切に。", "hashtags": ["ありがとう", "大切にしたいこと", "感謝"], "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2026/04/IMG_5005-1-768x1024.jpg", "cardImagePosition": "50% 50%", "profileImagePosition": "50% 50%", "profileStatus": "未入力", "whyITeach": "", "myChallenge": "", "myFavorite": "", "myMotto": ""}, {"sort": 200, "active": true, "name": "藤村 彩実", "nameEn": "Ayami Fujimura", "department": "social", "label": "地歴公民", "position": "", "role": "SOCIAL STUDIES", "tagline": "全力で、人生を楽しもう。", "hashtags": ["思いやり", "全力", "笑顔"], "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2026/04/DSC05280-1-1024x683.jpg", "cardImagePosition": "50% 50%", "profileImagePosition": "80% 50%", "profileStatus": "未入力", "whyITeach": "", "myChallenge": "", "myFavorite": "", "myMotto": ""}, {"sort": 210, "active": true, "name": "行徳 尚文", "nameEn": "Naofumi Gyotoku", "department": "social", "label": "地歴公民", "position": "", "role": "SOCIAL STUDIES", "tagline": "世界50カ国、その先の地理へ。", "hashtags": ["世界50カ国", "旅行会社35年", "中国生活"], "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2025/12/e4b127c8aba9e08cc96de04cdd18f2c6.png", "cardImagePosition": "50% 50%", "profileImagePosition": "50% 50%", "profileStatus": "ダミー", "whyITeach": "世界を歩くと、自分が当たり前だと思っていたことが簡単にひっくり返ります。地理の授業を通じて、生徒が自分の世界を少し広げ、知らない価値観に出会うきっかけをつくりたいです。", "myChallenge": "旅や仕事で得たリアルな経験を、教科書の知識と結びつけて、生徒が世界を立体的に捉えられる授業にすること。", "myFavorite": "旅行 / 地図 / 異文化 / まだ行ったことのない場所", "myMotto": "井の中の蛙、大海を知らず。"}, {"sort": 220, "active": true, "name": "川村 周平", "nameEn": "Shuhei Kawamura", "department": "social", "label": "地歴公民", "position": "", "role": "SOCIAL STUDIES", "tagline": "好奇心を、学びの冒険へ。", "hashtags": ["好奇心", "学びの冒険", "自由に知る"], "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2025/12/DSC_0234-2-scaled.jpg", "cardImagePosition": "50% 50%", "profileImagePosition": "50% 50%", "profileStatus": "未入力", "whyITeach": "", "myChallenge": "", "myFavorite": "", "myMotto": ""}, {"sort": 230, "active": true, "name": "長友 世渚", "nameEn": "Sena Nagatomo", "department": "social", "label": "地歴公民", "position": "", "role": "SOCIAL STUDIES", "tagline": "人生に、胸躍るストーリーを。", "hashtags": ["人生は一冊の本", "失敗を恐れない", "ストーリー"], "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2025/12/686be9699e998a81e02a6df5f30e3e1c.png", "cardImagePosition": "50% 50%", "profileImagePosition": "50% 50%", "profileStatus": "未入力", "whyITeach": "", "myChallenge": "", "myFavorite": "", "myMotto": ""}, {"sort": 240, "active": true, "name": "福原 栞", "nameEn": "Shiori Fukuhara", "department": "business", "label": "商業", "position": "", "role": "BUSINESS", "tagline": "簿記は武器。", "hashtags": ["簿記は武器", "お金", "ビジネス"], "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2023/04/IMG_4612-200x300.jpg", "cardImagePosition": "50% 50%", "profileImagePosition": "50% 50%", "profileStatus": "ダミー", "whyITeach": "簿記は資格を取るためだけの学びではなく、会社や社会を読み解くための言語だと思っています。数字の向こう側にいる人や仕事まで想像できるようになると、商業はぐっと面白くなります。", "myChallenge": "「簿記は苦手」と感じる生徒にも、学んだことが実社会とつながった瞬間の面白さを届けること。", "myFavorite": "お金の仕組み / ビジネス / 分かりやすく説明すること", "myMotto": "簿記は武器。"}, {"sort": 250, "active": true, "name": "宮﨑 珠美", "nameEn": "Tamami Miyazaki", "department": "business", "label": "商業", "position": "", "role": "BUSINESS", "tagline": "生きた商業を、社会と学ぶ。", "hashtags": ["マーケティング", "ビジネスビューティー", "起業家精神"], "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2016/10/IMG_7619-300x225.jpg", "cardImagePosition": "50% 50%", "profileImagePosition": "50% 50%", "profileStatus": "未入力", "whyITeach": "", "myChallenge": "", "myFavorite": "", "myMotto": ""}, {"sort": 260, "active": true, "name": "仙石 由香", "nameEn": "Yuka Sengoku", "department": "business", "label": "商業", "position": "", "role": "BUSINESS", "tagline": "100円を1000円にする発想。", "hashtags": ["起業", "マーケティング", "経営"], "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2022/06/IMG_2387-1-300x200.jpg", "cardImagePosition": "50% 50%", "profileImagePosition": "50% 50%", "profileStatus": "未入力", "whyITeach": "", "myChallenge": "", "myFavorite": "", "myMotto": ""}, {"sort": 270, "active": true, "name": "丸山 愛子", "nameEn": "Aiko Maruyama", "department": "business", "label": "商業", "position": "", "role": "BUSINESS / ICT", "tagline": "失敗は、一生の財産になる。", "hashtags": ["Chromebook", "情報処理", "失敗は財産"], "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2023/04/IMG_4027-300x200.jpg", "cardImagePosition": "50% 50%", "profileImagePosition": "50% 50%", "profileStatus": "未入力", "whyITeach": "", "myChallenge": "", "myFavorite": "", "myMotto": ""}, {"sort": 280, "active": true, "name": "千葉 直輝", "nameEn": "Naoki Chiba", "department": "business", "label": "商業", "position": "", "role": "BUSINESS", "tagline": "人生、楽しんだもん勝ち。", "hashtags": ["人生楽しんだもん勝ち", "挑戦", "一緒に探す"], "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2026/04/DSC05273-1-1024x683.jpeg", "cardImagePosition": "50% 50%", "profileImagePosition": "50% 50%", "profileStatus": "未入力", "whyITeach": "", "myChallenge": "", "myFavorite": "", "myMotto": ""}, {"sort": 290, "active": true, "name": "越山 瑠唯", "nameEn": "Rui Koshiyama", "department": "business", "label": "商業・情報", "position": "", "role": "BUSINESS / ICT", "tagline": "まず、話を聞くところから。", "hashtags": ["商業情報", "生徒を否定しない", "対話"], "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2025/05/ea8c129c3e6ec4d87823b0b6bb4ca1a0-scaled-e1746756484818-300x193.jpg", "cardImagePosition": "50% 50%", "profileImagePosition": "50% 50%", "profileStatus": "未入力", "whyITeach": "", "myChallenge": "", "myFavorite": "", "myMotto": ""}, {"sort": 300, "active": true, "name": "竹之下 想馬", "nameEn": "Souma Takenoshita", "department": "business", "label": "商業", "position": "", "role": "BUSINESS", "tagline": "簿記から、社会を見る力へ。", "hashtags": ["簿記", "実践的スキル", "多角的視点"], "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2025/05/356805f932e940f988d68032495bcfb2-scaled-e1746756512611-273x300.jpg", "cardImagePosition": "50% 50%", "profileImagePosition": "50% 50%", "profileStatus": "未入力", "whyITeach": "", "myChallenge": "", "myFavorite": "", "myMotto": ""}, {"sort": 310, "active": true, "name": "杉原 壮", "nameEn": "Takeshi Sugihara", "department": "business", "label": "商業", "position": "", "role": "BUSINESS", "tagline": "くすぶる心に、火をつける。", "hashtags": ["くすぶる心に火を", "商業", "プロジェクト"], "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2025/05/f83602da6cf44219e1777f75385e63bc-scaled-e1746756763839-300x212.jpg", "cardImagePosition": "50% 50%", "profileImagePosition": "50% 50%", "profileStatus": "未入力", "whyITeach": "", "myChallenge": "", "myFavorite": "", "myMotto": ""}, {"sort": 320, "active": true, "name": "山崎 隼之介", "nameEn": "Junnosuke Yamazaki", "department": "business", "label": "商業・情報", "position": "", "role": "BUSINESS / ICT", "tagline": "AI×情報×数学で挑戦を後押し。", "hashtags": ["AI", "情報", "数学"], "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2026/04/IMG_5040-1024x768.jpg", "cardImagePosition": "50% 50%", "profileImagePosition": "50% 50%", "profileStatus": "未入力", "whyITeach": "", "myChallenge": "", "myFavorite": "", "myMotto": ""}, {"sort": 330, "active": true, "name": "平田 佑太朗", "nameEn": "Yuutaro Hirata", "department": "business", "label": "商業", "position": "", "role": "BUSINESS", "tagline": "「やればよかった」をなくす。", "hashtags": ["人生楽しんだもん勝ち", "後悔しない選択", "やってよかった"], "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2026/08/Image_20260827_075914_488-225x300.jpeg", "cardImagePosition": "50% 50%", "profileImagePosition": "50% 50%", "profileStatus": "未入力", "whyITeach": "", "myChallenge": "", "myFavorite": "", "myMotto": ""}, {"sort": 340, "active": true, "name": "坂井 幸美", "nameEn": "Yukimi Sakai", "department": "pe", "label": "保健体育", "position": "", "role": "HEALTH / PE", "tagline": "自分の人生を、自分で選ぶ。", "hashtags": ["心と体", "自分で選ぶ", "共に成長"], "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2024/04/IMG_0564-300x200.jpg", "cardImagePosition": "50% 50%", "profileImagePosition": "50% 50%", "profileStatus": "未入力", "whyITeach": "", "myChallenge": "", "myFavorite": "", "myMotto": ""}, {"sort": 350, "active": true, "name": "藤 紗織", "nameEn": "Saori To", "department": "pe", "label": "保健体育", "position": "", "role": "HEALTH / PE", "tagline": "体を動かす楽しさから。", "hashtags": ["バスケットボール", "体を動かす楽しさ", "仲間を尊重"], "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2016/10/IMG_6898-scaled-e1631771718898-220x300.jpg", "cardImagePosition": "50% 50%", "profileImagePosition": "50% 50%", "profileStatus": "未入力", "whyITeach": "", "myChallenge": "", "myFavorite": "", "myMotto": ""}, {"sort": 360, "active": true, "name": "鈴木 優太", "nameEn": "Yuta Suzuki", "department": "pe", "label": "保健体育", "position": "", "role": "HEALTH / PE", "tagline": "成功も失敗も、全部経験。", "hashtags": ["チャレンジ", "成功体験", "失敗体験"], "image": "", "cardImagePosition": "50% 50%", "profileImagePosition": "50% 50%", "profileStatus": "未入力", "whyITeach": "", "myChallenge": "", "myFavorite": "", "myMotto": ""}, {"sort": 370, "active": true, "name": "藤竹 瞭", "nameEn": "Ryo Fujitake", "department": "pe", "label": "保健体育", "position": "", "role": "HEALTH / PE", "tagline": "幸せに生きるための体育。", "hashtags": ["幸せに生きる", "健康", "保健体育"], "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2026/04/IMG_0874.jpg", "cardImagePosition": "50% 50%", "profileImagePosition": "50% 50%", "profileStatus": "未入力", "whyITeach": "", "myChallenge": "", "myFavorite": "", "myMotto": ""}, {"sort": 380, "active": true, "name": "牛込 紘太", "nameEn": "Kouta Ushigome", "department": "inquiry", "label": "探究", "position": "", "role": "INQUIRY", "tagline": "正解のない問いを楽しむ。", "hashtags": ["探究", "言語化", "とりあえずやってみる"], "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2026/04/IMG_5011-768x1024.jpg", "cardImagePosition": "50% 50%", "profileImagePosition": "50% 50%", "profileStatus": "未入力", "whyITeach": "", "myChallenge": "", "myFavorite": "", "myMotto": ""}, {"sort": 390, "active": true, "name": "福田 未来", "nameEn": "Miki Fukuda", "department": "home", "label": "家庭", "position": "", "role": "HOME ECONOMICS", "tagline": "なんとかなる。やってみよう。", "hashtags": ["人生なんとかなる", "やりたいこと", "少しの勇気"], "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2026/04/IMG_5019-768x1024.jpg", "cardImagePosition": "50% 50%", "profileImagePosition": "50% 50%", "profileStatus": "未入力", "whyITeach": "", "myChallenge": "", "myFavorite": "", "myMotto": ""}, {"sort": 400, "active": true, "name": "島田 晴海", "nameEn": "Harumi Shimada", "department": "health", "label": "養護", "position": "養護教諭", "role": "SCHOOL HEALTH", "tagline": "健康は、挑戦の土台。", "hashtags": ["健康", "人生をデザイン", "挑戦の土台"], "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2026/04/IMG_8295-1024x819.jpg", "cardImagePosition": "50% 50%", "profileImagePosition": "50% 50%", "profileStatus": "未入力", "whyITeach": "", "myChallenge": "", "myFavorite": "", "myMotto": ""}, {"sort": 410, "active": true, "name": "安澤 萌花", "nameEn": "Moeka Yasuzawa", "department": "health", "label": "養護", "position": "養護教諭", "role": "SCHOOL HEALTH", "tagline": "", "hashtags": [], "image": "", "cardImagePosition": "50% 50%", "profileImagePosition": "50% 50%", "profileStatus": "未入力", "whyITeach": "", "myChallenge": "", "myFavorite": "", "myMotto": ""}, {"sort": 500, "active": true, "name": "柴山 翔太", "nameEn": "Shota Shibayama", "department": "specials", "label": "パラレルティーチャー", "position": "フェロー", "role": "SPECIALS", "tagline": "君も校長やればいい。", "hashtags": ["イカ", "ヒラメ"], "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2026/09/cd79e423adc48834785ed51f218cbad5.jpeg", "cardImagePosition": "50% 50%", "profileImagePosition": "50% 50%", "profileStatus": "確定", "whyITeach": "学校の内側だけで教育を完結させず、社会で挑戦している大人と生徒が日常的に出会える環境をつくることで、進路や生き方の選択肢はもっと広がると考えています。", "myChallenge": "学校外の人・企業・プロジェクトと女子商をつなぎ、“先生”という言葉の意味そのものを広げていくこと。", "myFavorite": "新しい教育の仕組み / 人をつなぐこと / イカ", "myMotto": "君も校長やればいい。"}, {"sort": 510, "active": true, "name": "高石 大道", "nameEn": "Daido Takaishi", "department": "specials", "label": "パラレルティーチャー", "position": "CLO", "role": "SPECIALS", "tagline": "はい、学びぃ〜。", "hashtags": ["家庭菜園", "引率"], "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2026/09/5704e4835733b179d8075a7f759cd25e.webp", "cardImagePosition": "50% 50%", "profileImagePosition": "50% 50%", "profileStatus": "確定", "whyITeach": "組織やチームの目指す先と自分のWillを掛け合わせてみんなで幸せになること。", "myChallenge": "学校・国内外での挑戦を共にし、バクノビに貢献すること。", "myFavorite": "家庭菜園", "myMotto": "DDP"}, {"sort": 520, "active": true, "name": "吉本 悟", "nameEn": "Satoru Yoshimoto", "department": "specials", "label": "パラレルティーチャー", "position": "Learning Conductor", "role": "SPECIALS", "tagline": "遊ぶと学ぶを類義語に", "hashtags": [], "image": "", "cardImagePosition": "50% 50%", "profileImagePosition": "50% 50%", "profileStatus": "未入力", "whyITeach": "", "myChallenge": "", "myFavorite": "", "myMotto": ""}, {"sort": 530, "active": true, "name": "鈴木 卓也", "nameEn": "Takuya Suzuki", "department": "specials", "label": "パラレルティーチャー", "position": "公認会計士", "role": "SPECIALS", "tagline": "", "hashtags": ["簿記", "学校会計"], "image": "", "cardImagePosition": "50% 50%", "profileImagePosition": "50% 50%", "profileStatus": "未入力", "whyITeach": "", "myChallenge": "", "myFavorite": "", "myMotto": ""}, {"sort": 540, "active": true, "name": "竹山 祥世", "nameEn": "Sachiyo Takeyama", "department": "specials", "label": "パラレルティーチャー", "position": "ひきだし", "role": "SPECIALS", "tagline": "", "hashtags": ["国家資格", "キャリア", "コンサルタント"], "image": "", "cardImagePosition": "50% 50%", "profileImagePosition": "50% 50%", "profileStatus": "未入力", "whyITeach": "", "myChallenge": "", "myFavorite": "", "myMotto": ""}, {"sort": 550, "active": true, "name": "勝田 浩次", "nameEn": "Hirotsugu Katsuta", "department": "specials", "label": "パラレルティーチャー", "position": "", "role": "SPECIALS", "tagline": "", "hashtags": [], "image": "", "cardImagePosition": "50% 50%", "profileImagePosition": "50% 50%", "profileStatus": "未入力", "whyITeach": "", "myChallenge": "", "myFavorite": "", "myMotto": ""}, {"sort": 560, "active": true, "name": "細川 凌平", "nameEn": "Ryohei Hosokawa", "department": "specials", "label": "パラレルティーチャー", "position": "広報/生徒会", "role": "SPECIALS", "tagline": "自分の人生、自分でデザイン！", "hashtags": ["生徒自治", "探求"], "image": "https://yashima.ac.jp/fgchs/wp-content/uploads/2026/09/08d8fd9976efb1b3d8a2cb909950b7d1.webp", "cardImagePosition": "50% 50%", "profileImagePosition": "50% 50%", "profileStatus": "確定", "whyITeach": "先生方とコミュニケーションを取りながら、学校の中だけでは見えにくい新たな視点を届け、生徒と教員それぞれの「次の一歩」を支えていくこと。", "myChallenge": "外部の力と教員の専門性を掛け合わせながら、学校の業務のあり方をアップデートしていくこと。", "myFavorite": "最近、疲れたらワンちゃんの動画をひたすら視聴すること", "myMotto": "有言実行"}];
+const regular=teachers.filter(t=>t.department!=="specials").sort((a,b)=>a.sort-b.sort);
+const parallel=teachers.filter(t=>t.department==="specials").sort((a,b)=>a.sort-b.sort);
+const filters=[["all","ALL"],["management","管理職"],["business","商業"],["english","英語"],["japanese","国語"],["math","数学"],["science","理科"],["social","地歴公民"],["pe","保健体育"],["inquiry","探究"],["home","家庭"],["health","養護"]];
+const esc=s=>String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+const initial=n=>(n||"").replace(/\s/g,"").slice(0,1)||"T";
+const grid=document.getElementById("grid"), pgrid=document.getElementById("pgrid"), filterBox=document.getElementById("filters");
 
-  const regular = teachers.filter(t => t.department !== 'specials').sort((a,b)=>a.sort-b.sort);
-  const parallel = teachers.filter(t => t.department === 'specials').sort((a,b)=>a.sort-b.sort);
+function img(t,kind){
+ if(!t.image)return "";
+ const pos=kind==="profile"?t.profileImagePosition:t.cardImagePosition;
+ return `<img src="${esc(t.image)}" alt="${esc(t.name)}" loading="lazy" decoding="async" style="object-position:${esc(pos||"50% 50%")}">`;
+}
+function tags(t,cls="tag"){return (t.hashtags||[]).map(x=>`<span class="${cls}">#${esc(x)}</span>`).join("")}
+function card(t){
+ return `<article class="card trigger" tabindex="0" role="button" data-name="${esc(t.name)}" data-dept="${esc(t.department)}" aria-label="${esc(t.name)}のプロフィールを見る">
+ <div class="card__media" data-initial="${esc(initial(t.name))}">${img(t,"card")}<div class="card__shade"></div><div class="card__tag">${esc(t.label)}</div><div class="card__arrow">↗</div>
+ <div class="card__body"><div class="card__role">${esc(t.position||t.role)}</div><h3 class="card__name">${esc(t.name)}</h3><div class="card__en">${esc(t.nameEn)}</div>${t.tagline?`<p class="card__tagline">${esc(t.tagline)}</p>`:""}<div class="tags">${tags(t)}</div></div></div></article>`;
+}
+function pcard(t){
+ return `<article class="pcard trigger" tabindex="0" role="button" data-name="${esc(t.name)}" aria-label="${esc(t.name)}のプロフィールを見る">
+ <div class="pcard__visual" data-initial="${esc(initial(t.name))}">${img(t,"card")}</div><div class="pcard__body"><div class="pcard__role">${esc(t.position||t.role||"PARALLEL TEACHER")}</div><h3 class="pcard__name">${esc(t.name)}</h3><div class="pcard__en">${esc(t.nameEn)}</div>${t.tagline?`<p class="pcard__tagline">${esc(t.tagline)}</p>`:""}<div class="tags">${tags(t)}</div></div></article>`;
+}
+filterBox.innerHTML=filters.map((f,i)=>`<button class="filter${i===0?" is-active":""}" data-filter="${f[0]}" type="button">${f[1]}</button>`).join("");
+grid.innerHTML=regular.map(card).join("");
+pgrid.innerHTML=parallel.map(pcard).join("");
+document.getElementById("count").textContent=regular.length;
+document.getElementById("pcount").textContent=parallel.length;
 
-  const filters = [
-    ['all','ALL'],['management','管理職'],['business','商業'],['english','英語'],
-    ['japanese','国語'],['math','数学'],['science','理科'],['social','地歴公民'],
-    ['pe','保健体育'],['inquiry','探究'],['home','家庭'],['health','養護']
-  ];
+filterBox.addEventListener("click",e=>{
+ const b=e.target.closest(".filter"); if(!b)return;
+ document.querySelectorAll(".filter").forEach(x=>x.classList.toggle("is-active",x===b));
+ const key=b.dataset.filter; let n=0;
+ grid.querySelectorAll(".card").forEach(c=>{const show=key==="all"||c.dataset.dept===key;c.hidden=!show;if(show)n++;});
+ document.getElementById("count").textContent=n;
+});
 
-  const esc = s => String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-  const initialOf = name => (name || '').replace(/\s/g,'').slice(0,1) || 'T';
-  const clean = s => String(s ?? '').trim();
+const modal=document.getElementById("modal"), mMedia=document.getElementById("modalMedia"), mImg=document.getElementById("modalImage");
+const mTop=document.getElementById("modalTop"),mName=document.getElementById("modalName"),mEn=document.getElementById("modalEn"),mTagline=document.getElementById("modalTagline"),mTags=document.getElementById("modalTags"),sample=document.getElementById("sample"),empty=document.getElementById("empty");
+let group=regular,index=0,lastTrigger=null;
 
-  // Image strategy for the static prototype:
-  // 1) paint the stored WordPress size immediately,
-  // 2) near the viewport try a ~768px WP derivative,
-  // 3) if that derivative does not exist, fall back to the original,
-  // 4) the full original is always loaded immediately only when a profile is opened.
-  function highResCandidate(url){
-    if(!url) return '';
-    return url.replace(/-\d+x\d+(?=\.(?:jpe?g|png|webp|gif)$)/i,'');
-  }
-  function mediumCandidate(url){
-    if(!url) return '';
-    const m=url.match(/^(.*)-(\d+)x(\d+)(\.(?:jpe?g|png|webp))$/i);
-    if(!m) return '';
-    const w=Number(m[2]), h=Number(m[3]);
-    if(!w || w>=700) return '';
-    const targetW=768;
-    const targetH=Math.max(1,Math.round(h*(targetW/w)));
-    return `${m[1]}-${targetW}x${targetH}${m[4]}`;
-  }
-  function imageTag(t, className=''){
-    if(!t.image) return '';
-    const low=t.image;
-    const medium=mediumCandidate(low);
-    const hi=highResCandidate(low);
-    return `<img class="fg-progressive-img ${className}" src="${esc(low)}" data-medium="${esc(medium)}" data-hires="${esc(hi)}" alt="${esc(t.name)}" loading="lazy" decoding="async" fetchpriority="low" style="object-position:${esc(t.imagePosition || '50% 50%')}" onerror="this.hidden=true;">`;
-  }
-
-  // ---------- directory ----------
-  const filterBox = document.getElementById('fgFilters');
-  const grid = document.getElementById('fgTeacherGrid');
-  const count = document.getElementById('fgVisibleCount');
-  const pGrid = document.getElementById('fgParallelGrid');
-  const pCount = document.getElementById('fgParallelCount');
-
-  filterBox.innerHTML = filters.map(([key,label],i) =>
-    `<button type="button" class="fg-filter${i===0?' is-active':''}" data-filter="${key}">${label}</button>`
-  ).join('');
-
-  function tagsMarkup(tags, cls){
-    return (tags || []).filter(Boolean).map(x=>`<span class="${cls}">${esc(x)}</span>`).join('');
-  }
-
-  function regularCard(t){
-    return `
-      <article class="fg-card fg-profile-trigger" data-dept="${esc(t.department)}" data-name="${esc(t.name)}" tabindex="0" role="button" aria-label="${esc(t.name)}のプロフィールを見る">
-        <div class="fg-card__media" data-initial="${esc(initialOf(t.name))}">
-          ${imageTag(t)}
-          <div class="fg-card__tag">${esc(t.label || '')}</div>
-          <div class="fg-card__overlay">
-            <div class="fg-card__role">${esc(t.position || t.role || '')}</div>
-            <h3 class="fg-card__name">${esc(t.name)}</h3>
-            <div class="fg-card__name-en">${esc(t.nameEn || '')}</div>
-            ${t.tagline ? `<p class="fg-card__tagline">${esc(t.tagline)}</p>` : ''}
-            <div class="fg-card__hashtags">${tagsMarkup(t.hashtags,'fg-card__hashtag')}</div>
-          </div>
-          <div class="fg-card__arrow" aria-hidden="true">↗</div>
-        </div>
-      </article>`;
-  }
-
-  function parallelCard(t){
-    return `
-      <article class="fg-parallel-card fg-profile-trigger" data-name="${esc(t.name)}" tabindex="0" role="button" aria-label="${esc(t.name)}のプロフィールを見る">
-        <div class="fg-parallel-card__visual" data-initial="${esc(initialOf(t.name))}">
-          ${imageTag(t)}
-        </div>
-        <div class="fg-parallel-card__body">
-          <div class="fg-parallel-card__role">${esc(t.position || t.role || 'PARALLEL TEACHER')}</div>
-          <h3 class="fg-parallel-card__name">${esc(t.name)}</h3>
-          <div class="fg-parallel-card__name-en">${esc(t.nameEn || '')}</div>
-          ${t.tagline ? `<p class="fg-parallel-card__tagline">${esc(t.tagline)}</p>` : ''}
-          <div class="fg-parallel-card__hashtags">${tagsMarkup(t.hashtags,'fg-parallel-card__hashtag')}</div>
-        </div>
-      </article>`;
-  }
-
-  grid.innerHTML = regular.map(regularCard).join('');
-  pGrid.innerHTML = parallel.map(parallelCard).join('');
-  count.textContent = regular.length;
-  pCount.textContent = parallel.length;
-
-
-  // Upgrade only images near the viewport, max two network jobs at a time.
-  // On Data Saver / 2G, keep the lightweight card image and reserve full-res for profile open.
-  const conn=navigator.connection || navigator.mozConnection || navigator.webkitConnection;
-  const conserveData=!!(conn && (conn.saveData || /(^|-)2g$/.test(conn.effectiveType || '')));
-  const upgradeQueue=[];
-  let activeUpgrades=0;
-  const MAX_UPGRADES=2;
-
-  function finishUpgrade(){
-    activeUpgrades=Math.max(0,activeUpgrades-1);
-    pumpUpgrades();
-  }
-  function tryCandidate(img,url,next){
-    if(!url){ next(); return; }
-    const probe=new Image();
-    probe.decoding='async';
-    probe.onload=()=>{
-      img.classList.remove('is-upgrading');
-      img.classList.add('is-hires');
-      img.src=url;
-      finishUpgrade();
-    };
-    probe.onerror=next;
-    probe.src=url;
-  }
-  function upgradeCardImage(img){
-    if(img.dataset.upgradeStarted==='1') return;
-    img.dataset.upgradeStarted='1';
-    img.classList.add('is-upgrading');
-    const medium=img.dataset.medium || '';
-    const hi=img.dataset.hires || '';
-    tryCandidate(img,medium,()=>{
-      if(hi && hi!==img.currentSrc && hi!==img.src){
-        tryCandidate(img,hi,()=>{
-          img.classList.remove('is-upgrading');
-          finishUpgrade();
-        });
-      }else{
-        img.classList.remove('is-upgrading');
-        finishUpgrade();
-      }
-    });
-  }
-  function pumpUpgrades(){
-    while(activeUpgrades<MAX_UPGRADES && upgradeQueue.length){
-      const img=upgradeQueue.shift();
-      if(!img || img.dataset.upgradeStarted==='1') continue;
-      activeUpgrades++;
-      upgradeCardImage(img);
-    }
-  }
-  function queueUpgrade(img){
-    if(!img || img.dataset.queued==='1' || img.dataset.upgradeStarted==='1') return;
-    img.dataset.queued='1';
-    upgradeQueue.push(img);
-    pumpUpgrades();
-  }
-
-  if(!conserveData && 'IntersectionObserver' in window){
-    const imageObserver=new IntersectionObserver(entries=>{
-      entries.forEach(entry=>{
-        if(entry.isIntersecting){
-          imageObserver.unobserve(entry.target);
-          queueUpgrade(entry.target);
-        }
-      });
-    },{rootMargin:'240px 0px'});
-    document.querySelectorAll('.fg-progressive-img[data-hires]').forEach(img=>imageObserver.observe(img));
-  }
-
-  filterBox.addEventListener('click', e => {
-    const btn = e.target.closest('.fg-filter');
-    if(!btn) return;
-    document.querySelectorAll('.fg-filter').forEach(b=>b.classList.toggle('is-active',b===btn));
-    const key = btn.dataset.filter;
-    let visible = 0;
-    grid.querySelectorAll('.fg-card').forEach(card => {
-      const show = key === 'all' || card.dataset.dept === key;
-      card.hidden = !show;
-      if(show) visible++;
-    });
-    count.textContent = visible;
-  });
-
-  // ---------- profile modal ----------
-  const modal = document.getElementById('fgProfileModal');
-  const media = document.getElementById('fgProfileMedia');
-  const img = document.getElementById('fgProfileImage');
-  const role = document.getElementById('fgProfileRole');
-  const name = document.getElementById('fgProfileName');
-  const nameEn = document.getElementById('fgProfileNameEn');
-  const tagline = document.getElementById('fgProfileTagline');
-  const hashtags = document.getElementById('fgProfileHashtags');
-  const sample = document.getElementById('fgProfileSample');
-  const empty = document.getElementById('fgProfileEmpty');
-  const prevBtn = document.getElementById('fgProfilePrev');
-  const nextBtn = document.getElementById('fgProfileNext');
-  const closeBtn = modal.querySelector('.fg-profile-modal__close');
-
-  let currentGroup = regular;
-  let currentIndex = 0;
-  let lastTrigger = null;
-
-  function setBlock(field, value){
-    const block = modal.querySelector(`[data-field="${field}"]`);
-    const text = block.querySelector('.fg-profile-block__text');
-    const v = clean(value);
-    block.hidden = !v;
-    text.textContent = v;
-    return !!v;
-  }
-
-  function loadModal(t){
-    const isParallel = t.department === 'specials';
-    modal.classList.toggle('is-parallel', isParallel);
-    media.dataset.initial = initialOf(t.name);
-    role.textContent = [t.label, t.position || t.role].filter(Boolean).join(' / ');
-    name.textContent = t.name || '';
-    nameEn.textContent = t.nameEn || '';
-    tagline.textContent = t.tagline || '';
-    hashtags.innerHTML = (t.hashtags||[]).filter(Boolean).map(x=>`<span class="fg-profile-modal__hashtag">${esc(x)}</span>`).join('');
-    sample.classList.toggle('is-visible', t.profileStatus === 'ダミー');
-
-    if(t.image){
-      const hi = highResCandidate(t.image);
-      img.hidden = false;
-      img.alt = t.name || '';
-      img.style.objectPosition = t.imagePosition || '50% 50%';
-      img.onerror = () => {
-        if(img.src !== t.image){ img.onerror = () => { img.hidden = true; }; img.src = t.image; }
-        else img.hidden = true;
-      };
-      img.src = hi;
-    } else {
-      img.hidden = true;
-      img.removeAttribute('src');
-    }
-
-    const hasAny = [
-      setBlock('whyITeach',t.whyITeach),
-      setBlock('myChallenge',t.myChallenge),
-      setBlock('myFavorite',t.myFavorite),
-      setBlock('myMotto',t.myMotto)
-    ].some(Boolean);
-    empty.classList.toggle('is-visible', !hasAny);
-
-    prevBtn.setAttribute('aria-label', `${currentGroup[(currentIndex-1+currentGroup.length)%currentGroup.length]?.name || ''}へ`);
-    nextBtn.setAttribute('aria-label', `${currentGroup[(currentIndex+1)%currentGroup.length]?.name || ''}へ`);
-  }
-
-  function openProfile(t, trigger){
-    lastTrigger = trigger || document.activeElement;
-    currentGroup = t.department === 'specials' ? parallel : regular;
-    currentIndex = Math.max(0,currentGroup.findIndex(x=>x.name===t.name));
-    loadModal(t);
-    modal.classList.add('is-open');
-    modal.setAttribute('aria-hidden','false');
-    document.body.classList.add('fg-modal-open');
-    closeBtn.focus({preventScroll:true});
-  }
-
-  function closeProfile(){
-    modal.classList.remove('is-open');
-    modal.setAttribute('aria-hidden','true');
-    document.body.classList.remove('fg-modal-open');
-    if(lastTrigger && lastTrigger.focus) lastTrigger.focus({preventScroll:true});
-  }
-
-  function moveProfile(delta){
-    currentIndex = (currentIndex + delta + currentGroup.length) % currentGroup.length;
-    loadModal(currentGroup[currentIndex]);
-    modal.querySelector('.fg-profile-modal__content').scrollTop = 0;
-  }
-
-  document.getElementById('fg-teachers-v1').addEventListener('click', e=>{
-    const trigger = e.target.closest('.fg-profile-trigger');
-    if(!trigger) return;
-    const t = teachers.find(x=>x.name===trigger.dataset.name);
-    if(t) openProfile(t,trigger);
-  });
-  document.getElementById('fg-teachers-v1').addEventListener('keydown', e=>{
-    const trigger = e.target.closest('.fg-profile-trigger');
-    if(trigger && (e.key==='Enter' || e.key===' ')){
-      e.preventDefault();
-      const t = teachers.find(x=>x.name===trigger.dataset.name);
-      if(t) openProfile(t,trigger);
-    }
-  });
-
-  modal.querySelectorAll('[data-profile-close]').forEach(el=>el.addEventListener('click',closeProfile));
-  prevBtn.addEventListener('click',()=>moveProfile(-1));
-  nextBtn.addEventListener('click',()=>moveProfile(1));
-
-  document.addEventListener('keydown', e=>{
-    if(!modal.classList.contains('is-open')) return;
-    if(e.key==='Escape') closeProfile();
-    if(e.key==='ArrowLeft') moveProfile(-1);
-    if(e.key==='ArrowRight') moveProfile(1);
-    if(e.key==='Tab'){
-      const focusables=[closeBtn,prevBtn,nextBtn].filter(x=>!x.disabled);
-      const first=focusables[0], last=focusables[focusables.length-1];
-      if(e.shiftKey && document.activeElement===first){e.preventDefault();last.focus();}
-      else if(!e.shiftKey && document.activeElement===last){e.preventDefault();first.focus();}
-    }
-  });
-})();
+function block(field,value){
+ const el=modal.querySelector(`[data-field="${field}"]`),txt=el.querySelector(".block__text"),v=String(value||"").trim();
+ el.hidden=!v;txt.textContent=v;return !!v;
+}
+function load(t){
+ const isP=t.department==="specials"; modal.classList.toggle("is-parallel",isP);
+ mMedia.dataset.initial=initial(t.name); mTop.textContent=[t.label,t.position||t.role].filter(Boolean).join(" / ");
+ mName.textContent=t.name;mEn.textContent=t.nameEn;mTagline.textContent=t.tagline||"";
+ mTags.innerHTML=(t.hashtags||[]).map(x=>`<span class="modal__tag">#${esc(x)}</span>`).join("");
+ sample.classList.toggle("show",t.profileStatus==="ダミー");
+ if(t.image){mImg.hidden=false;mImg.src=t.image;mImg.alt=t.name;mImg.style.objectPosition=t.profileImagePosition||"50% 50%";}else{mImg.hidden=true;mImg.removeAttribute("src");}
+ const any=[block("whyITeach",t.whyITeach),block("myChallenge",t.myChallenge),block("myFavorite",t.myFavorite),block("myMotto",t.myMotto)].some(Boolean);
+ empty.classList.toggle("show",!any);
+}
+function openProfile(t,trigger){
+ lastTrigger=trigger||document.activeElement;group=t.department==="specials"?parallel:regular;index=Math.max(0,group.findIndex(x=>x.name===t.name));load(t);
+ modal.classList.add("is-open");modal.setAttribute("aria-hidden","false");document.body.classList.add("modal-open");modal.querySelector(".close").focus({preventScroll:true});
+}
+function closeProfile(){modal.classList.remove("is-open");modal.setAttribute("aria-hidden","true");document.body.classList.remove("modal-open");if(lastTrigger?.focus)lastTrigger.focus({preventScroll:true})}
+function move(d){index=(index+d+group.length)%group.length;load(group[index]);modal.querySelector(".modal__content").scrollTop=0;}
+document.addEventListener("click",e=>{const t=e.target.closest(".trigger");if(t){const obj=teachers.find(x=>x.name===t.dataset.name);if(obj)openProfile(obj,t);}});
+document.addEventListener("keydown",e=>{
+ const t=e.target.closest?.(".trigger");
+ if(t&&(e.key==="Enter"||e.key===" ")){e.preventDefault();const obj=teachers.find(x=>x.name===t.dataset.name);if(obj)openProfile(obj,t);return;}
+ if(!modal.classList.contains("is-open"))return;
+ if(e.key==="Escape")closeProfile(); if(e.key==="ArrowLeft")move(-1); if(e.key==="ArrowRight")move(1);
+});
+modal.querySelectorAll("[data-close]").forEach(x=>x.addEventListener("click",closeProfile));
+document.getElementById("prev").addEventListener("click",()=>move(-1));
+document.getElementById("next").addEventListener("click",()=>move(1));
 </script>
+</body>
+</html>
